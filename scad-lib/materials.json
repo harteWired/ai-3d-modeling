@@ -1,0 +1,38 @@
+{
+  "$schema": "./materials.schema.json",
+  "_meta": {
+    "purpose": "Material property library for the strain-analyzer agent. Values are conservative literature/manufacturer figures for as-printed FDM parts on a Bambu X1C; treat them as engineering estimates, not certified test data. Per-design overrides live in spec.json.loadCase.materialOverride.",
+    "convention": "FDM parts are anisotropic. `yield_MPa` is the in-plane (XY) tensile yield; `interlayer_derate` is the multiplier to apply when stress is normal to the layer plane (Z-tension). Bending stress at a section with layer lines parallel to the bending axis pulls on layer interfaces — apply the derate. Bending stress with layer lines perpendicular to the bending axis is in-plane — don't derate.",
+    "sources": "Yield/tensile from Bambu Lab material profile cards (PLA Basic, PLA-CF, PETG-HF) and published filament datasheets (Polymaker PolyMax PLA-CF, Prusament PETG). Interlayer derate from independent FDM strength studies — values in the 0.45-0.70 range across PLA/PLA-CF/PETG, with CF the weakest because fiber alignment is in-plane only.",
+    "updated": "2026-05-22"
+  },
+  "materials": {
+    "PLA": {
+      "displayName": "PLA (generic)",
+      "yield_MPa": 50,
+      "tensile_MPa": 60,
+      "youngs_modulus_MPa": 3500,
+      "density_g_cc": 1.24,
+      "interlayer_derate": 0.65,
+      "notes": "Bambu PLA Basic profile yield ~50 MPa as-printed. Brittle failure; design to yield, not ultimate."
+    },
+    "PLA-CF": {
+      "displayName": "PLA Carbon Fiber",
+      "yield_MPa": 70,
+      "tensile_MPa": 85,
+      "youngs_modulus_MPa": 7000,
+      "density_g_cc": 1.30,
+      "interlayer_derate": 0.45,
+      "notes": "Bambu/Polymaker PLA-CF. ~40% stiffer than PLA but interlayer adhesion is the weak link — fibers reinforce in-plane only. Treat as more brittle than PLA in bending across layers."
+    },
+    "PETG": {
+      "displayName": "PETG",
+      "yield_MPa": 45,
+      "tensile_MPa": 50,
+      "youngs_modulus_MPa": 2000,
+      "density_g_cc": 1.27,
+      "interlayer_derate": 0.70,
+      "notes": "More ductile than PLA; better interlayer adhesion. Lower stiffness — deflection-limited designs may need thicker sections."
+    }
+  }
+}

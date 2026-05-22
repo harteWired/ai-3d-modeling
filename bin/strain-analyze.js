@@ -1,0 +1,215 @@
+#!/usr/bin/env node
+
+/**
+ * Strain analyzer CLI — closed-form beam-theory stress + safety factor.
+ *
+ * Usage:
+ *   node bin/strain-analyze.js designs/<name>
+ *   node bin/strain-analyze.js designs/<name> --json-only
+ *
+ * Reads designs/<name>/spec.json (must declare requiresStrainAnalysis + loadCase)
+ * and scad-lib/materials.json. Writes:
+ *   designs/<name>/output/strain-report.json   — raw numbers
+ *   designs/<name>/output/review-strain.md      — human-readable review
+ *
+ * Use --json-only to skip the markdown report (useful for piping).
+ */
+
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+import path from 'node:path';
+import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
+
+const execFileAsync = promisify(execFile);
+
+const PROJECT_ROOT = path.resolve(import.meta.dirname, '..');
+const VENV_PYTHON = path.join(PROJECT_ROOT, '.venv', 'bin', 'python3');
+const PYTHON_DIR = path.join(PROJECT_ROOT, 'python');
+
+async function fileExists(p) {
+  try { await access(p); return true; } catch { return false; }
+}
+
+function fmt(value, digits = 2) {
+  if (value === null || value === undefined) return 'n/a';
+  if (!Number.isFinite(value)) return '∞';
+  const abs = Math.abs(value);
+  if (abs >= 1000) return value.toFixed(0);
+  if (abs >= 10)   return value.toFixed(1);
+  return value.toFixed(digits);
+}
+
+function renderMarkdown(report) {
+  if (report.skipped) {
+    return `# Strain analysis — skipped\n\n${report.reason}\n`;
+  }
+
+  const lines = [];
+  const status = report.overall_pass ? 'PASS' : 'FAIL';
+  lines.push(`# Strain analysis — ${report.design_name} ${report.design_version || ''}`.trimEnd());
+  lines.push('');
+  lines.push(`**Status:** ${status} (worst section: ${report.worst_section}, safety factor ${fmt(report.worst_safety_factor)})`);
+  if (report.fea_recommended) {
+    lines.push('');
+    lines.push('> [!NOTE]');
+    lines.push('> One or more sections recommend FEA escalation. v1 of this agent stops at closed-form — see per-section notes below.');
+  }
+  if (report.description) {
+    lines.push('');
+    lines.push(report.description);
+  }
+  lines.push('');
+
+  // Material
+  const mat = report.material;
+  lines.push('## Material');
+  lines.push('');
+  lines.push(`**${mat._id}** — ${mat.displayName || mat._id}`);
+  lines.push('');
+  lines.push(`| Property | Value |`);
+  lines.push(`|---|---|`);
+  lines.push(`| Yield (in-plane) | ${fmt(mat.yield_MPa)} MPa |`);
+  lines.push(`| Young's modulus | ${fmt(mat.youngs_modulus_MPa)} MPa |`);
+  lines.push(`| Interlayer derate | ${fmt(mat.interlayer_derate, 2)} |`);
+  if (mat.notes) {
+    lines.push('');
+    lines.push(`*${mat.notes}*`);
+  }
+  lines.push('');
+
+  // Forces
+  lines.push('## Applied forces');
+  lines.push('');
+  lines.push(`| # | Magnitude (N) | Direction | Application point (mm) | Comment |`);
+  lines.push(`|---|---|---|---|---|`);
+  report.forces.forEach((f, i) => {
+    const d = f.direction.map(v => fmt(v, 2)).join(', ');
+    const p = f.applicationPoint_mm.map(v => fmt(v, 1)).join(', ');
+    lines.push(`| ${i + 1} | ${fmt(f.magnitude_N)} | [${d}] | [${p}] | ${f.comment || ''} |`);
+  });
+  lines.push('');
+
+  // Per-section
+  lines.push('## Critical sections');
+  lines.push('');
+  lines.push(`Minimum safety factor required: **${fmt(report.min_safety_factor)}**`);
+  lines.push('');
+
+  for (const s of report.sections) {
+    const sectionStatus = s.pass ? 'PASS' : 'FAIL';
+    lines.push(`### ${s.name} — ${sectionStatus} (SF = ${fmt(s.safety_factor)})`);
+    lines.push('');
+    if (s.comment) {
+      lines.push(s.comment);
+      lines.push('');
+    }
+    lines.push(`| Quantity | Value |`);
+    lines.push(`|---|---|`);
+    lines.push(`| Location (mm) | [${s.location_mm.map(v => fmt(v, 1)).join(', ')}] |`);
+    lines.push(`| Cross-section | ${s.shape_label} |`);
+    lines.push(`| Area | ${fmt(s.area_mm2)} mm² |`);
+    lines.push(`| Moment of inertia I | ${fmt(s.I_mm4, 0)} mm⁴ |`);
+    lines.push(`| Extreme fiber c | ${fmt(s.c_mm)} mm |`);
+    lines.push(`| Bending moment M | ${fmt(s.moment_Nmm)} N·mm |`);
+    lines.push(`| Bending stress σ = Mc/I | ${fmt(s.sigma_MPa, 3)} MPa |`);
+    lines.push(`| Layer orientation | ${s.layer_orientation} |`);
+    lines.push(`| Allowable σ | ${fmt(s.sigma_allow_MPa)} MPa (${s.allowable_basis}) |`);
+    lines.push(`| **Safety factor** | **${fmt(s.safety_factor)}** (need ≥ ${fmt(s.min_safety_factor)}) |`);
+    if (s.deflection_mm !== null && s.deflection_mm !== undefined) {
+      lines.push(`| Tip deflection (cantilever, L = ${fmt(s.cantilever_length_mm)} mm) | ${fmt(s.deflection_mm)} mm |`);
+    }
+    lines.push('');
+
+    if (s.fea_recommended) {
+      lines.push('**FEA recommended:**');
+      for (const r of s.fea_reasons) {
+        lines.push(`- ${r}`);
+      }
+      lines.push('');
+    }
+  }
+
+  lines.push('---');
+  lines.push('');
+  lines.push('*Generated by `bin/strain-analyze.js`. Closed-form beam theory only; for true safety factors on complex geometry run an FEA solver against the STL.*');
+  lines.push('');
+  return lines.join('\n');
+}
+
+function usage() {
+  console.error('Usage: node bin/strain-analyze.js designs/<name> [--json-only]');
+  process.exit(2);
+}
+
+async function main() {
+  const args = process.argv.slice(2);
+  if (args.length === 0 || args[0] === '--help') usage();
+
+  const designDir = path.resolve(args[0]);
+  const designName = path.basename(designDir);
+  const jsonOnly = args.includes('--json-only');
+
+  const specPath = path.join(designDir, 'spec.json');
+  if (!await fileExists(specPath)) {
+    console.error(`spec.json not found: ${specPath}`);
+    process.exit(1);
+  }
+  if (!await fileExists(VENV_PYTHON)) {
+    console.error('Python venv not found. Run: sudo bash setup.sh');
+    process.exit(1);
+  }
+
+  const outputDir = path.join(designDir, 'output');
+  await mkdir(outputDir, { recursive: true });
+  const reportPath = path.join(outputDir, 'strain-report.json');
+  const markdownPath = path.join(outputDir, 'review-strain.md');
+
+  console.log(`\n=== Strain Analysis: ${designName} ===\n`);
+
+  let result;
+  try {
+    result = await execFileAsync(
+      VENV_PYTHON,
+      [path.join(PYTHON_DIR, 'strain_analyze.py'), designDir, '--output', reportPath],
+      { cwd: PROJECT_ROOT, maxBuffer: 10 * 1024 * 1024 }
+    );
+  } catch (err) {
+    if (err.stderr) process.stderr.write(err.stderr);
+    console.error(`strain_analyze.py failed: ${err.message}`);
+    process.exit(1);
+  }
+  if (result.stderr) process.stderr.write(result.stderr);
+
+  const report = JSON.parse(await readFile(reportPath, 'utf-8'));
+
+  if (report.skipped) {
+    console.log(`Skipped: ${report.reason}`);
+    return;
+  }
+
+  // Console summary
+  console.log(`Material: ${report.material._id} (yield ${fmt(report.material.yield_MPa)} MPa, derate ${fmt(report.material.interlayer_derate, 2)})`);
+  console.log(`Sections analyzed: ${report.sections.length}`);
+  for (const s of report.sections) {
+    const tag = s.pass ? 'PASS' : 'FAIL';
+    console.log(`  [${tag}] ${s.name.padEnd(20)} σ = ${fmt(s.sigma_MPa, 3)} MPa, SF = ${fmt(s.safety_factor)}`);
+  }
+  console.log(`\nOverall: ${report.overall_pass ? 'PASS' : 'FAIL'} (worst: ${report.worst_section} @ SF ${fmt(report.worst_safety_factor)})`);
+  if (report.fea_recommended) {
+    console.log('FEA recommended — see report for reasons.');
+  }
+  console.log(`Report:    ${reportPath}`);
+
+  if (!jsonOnly) {
+    const md = renderMarkdown(report);
+    await writeFile(markdownPath, md);
+    console.log(`Review:    ${markdownPath}`);
+  }
+
+  if (!report.overall_pass) process.exitCode = 1;
+}
+
+main().catch(err => {
+  console.error(err);
+  process.exit(1);
+});

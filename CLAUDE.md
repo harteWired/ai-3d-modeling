@@ -48,6 +48,7 @@ node bin/validate.js designs/<name>              # Full pipeline
 node bin/validate.js designs/<name> --render-only    # Render only
 node bin/validate.js designs/<name> --analyze-only   # Skip render
 node bin/geometry-analyze.js designs/<name>      # Mesh + slicer analysis
+node bin/strain-analyze.js designs/<name>        # Closed-form bending stress + safety factor (opt-in)
 node bin/check-assembly.js assemblies/<name>.json    # Assembly check
 ```
 
@@ -59,6 +60,7 @@ node bin/check-assembly.js assemblies/<name>.json    # Assembly check
 
 - Each design lives in `designs/<name>/` with `requirements.md`, `spec.json`, `<name>.scad`
 - Designs with `requiresId: true` also have `designs/<name>/id/` containing `brief.md`, `moodboard/`, `mockups/`, `conversation-log.md`
+- Designs with `requiresStrainAnalysis: true` declare a `loadCase` block in `spec.json` (forces, critical sections, material). `scad-lib/materials.json` provides yield + interlayer-derate defaults for PLA, PLA-CF, PETG. `strain-analyzer` agent runs closed-form beam theory; flags FEA when margin is tight or section isn't a clean prism.
 - Shared aesthetic library at `designs/_id-library/` (families, references, lessons) — agent reads at start of ID projects, proposes promotions at end
 - OpenSCAD libs in `scad-lib/`: always include `fdm-pla.scad` and `bambu-x1c.scad`
 - Use `report_dimensions()` to echo bbox for validation parsing

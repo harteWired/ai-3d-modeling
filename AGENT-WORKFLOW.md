@@ -7,10 +7,12 @@ This project uses specialized agents to manage context across complex design tas
 | Complexity | Criteria | Pipeline |
 |---|---|---|
 | **Simple** | Single part, ≤5 features, no assembly | `spec-writer` → `modeler` (with inline print check) → `shipper` |
-| **Medium** | Single part, >5 features | `spec-writer` → [`id-designer`*] → `modeler` → `geometry-analyzer` → `print-reviewer` → `test-print-planner` → `modeler` (test pieces) → `shipper` |
-| **Complex** | Multi-part assembly | `spec-writer` → [`id-designer`*] → `modeler` (per part, parallel) → `geometry-analyzer` (per part, parallel) → `print-reviewer` + `fit-reviewer` (parallel) → `test-print-planner` → `modeler` (test pieces, parallel) → `shipper` |
+| **Medium** | Single part, >5 features | `spec-writer` → [`id-designer`*] → `modeler` → `geometry-analyzer` → [`strain-analyzer`†] → `print-reviewer` → `test-print-planner` → `modeler` (test pieces) → `shipper` |
+| **Complex** | Multi-part assembly | `spec-writer` → [`id-designer`*] → `modeler` (per part, parallel) → `geometry-analyzer` (per part, parallel) → [`strain-analyzer`† per loaded part] → `print-reviewer` + `fit-reviewer` (parallel) → `test-print-planner` → `modeler` (test pieces, parallel) → `shipper` |
 
 *`id-designer` runs when `spec.json` has `requiresId: true` — i.e. designs with a face, motif, or visible placement. Skipped for utility parts (brackets, adapters, internal components). See rule 2 below.
+
+†`strain-analyzer` runs when `spec.json` has `requiresStrainAnalysis: true` and a populated `loadCase` block — i.e. parts under external mechanical load (cantilever holders, brackets, mounts). Skipped for decorative/low-load parts. See rule 4.5 below.
 
 ## Model per agent
 
@@ -21,6 +23,7 @@ This project uses specialized agents to manage context across complex design tas
 | `modeler` | sonnet | OpenSCAD generation from a well-defined spec — throughput over judgment |
 | `modeler-fusion` | sonnet | Same as modeler |
 | `geometry-analyzer` | sonnet | Reading quantitative data, running analysis, interpreting results |
+| `strain-analyzer` | sonnet | Running closed-form beam-theory math, interpreting safety factors |
 | `print-reviewer` | sonnet | Evaluating reports against known printability rules |
 | `fit-reviewer` | sonnet | Dimensional tolerance checking against spec |
 | `test-print-planner` | sonnet | Structured output from existing report data |
@@ -38,6 +41,7 @@ When dispatching via the Agent tool, pass `model: 'opus'` for `id-designer`, `mo
    
    Both agents read `spec.json` AND `id/brief.md` (if present) and produce the same outputs: `output/<name>.stl` + `output/modeling-report.json`. Everything downstream is backend-agnostic. For multi-part assemblies, dispatch one modeler per part in parallel. Wait for all to report PASS.
 4. **Geometry stage:** Dispatch `geometry-analyzer` per part (parallel for multi-part). Produces `geometry-report.json` (mesh analysis) and `slicer-report.json` (PrusaSlicer G-code analysis, if slicer is installed). These are ground-truth geometry data for the reviewer.
+4.5. **Strain stage (conditional):** If `spec.json` has `requiresStrainAnalysis: true`, dispatch `strain-analyzer`. Reads `loadCase` block + `scad-lib/materials.json` and runs closed-form beam-theory math via `node bin/strain-analyze.js`. Produces `output/strain-report.json` + `output/review-strain.md`. The agent appends an interpretive Discussion section to the review and flags FEA escalation when the closed-form margin is tight (SF < 3) or the section isn't a clean prism. Skipped silently if `requiresStrainAnalysis` is absent or false. v1 does not run FEA itself — it only recommends.
 5. **Review stage:** Dispatch `print-reviewer` and (if multi-part) `fit-reviewer` in parallel. The print-reviewer now reads quantitative geometry data from the analyzer, not SCAD source. Both are read-only. If either reports FAIL, dispatch `modeler` with the specific fix instructions, re-run geometry analysis, then re-review.
 6. **ID critique stage (user-initiated, can repeat):** After render + review — or any time the user looks at renders and wants to iterate aesthetics — dispatch `id-designer` in **critique mode** with the render paths. The agent reads `id/brief.md` + `output/*.png` + `review-printability.md`, runs a critique dialogue, and emits `id/modeler-notes-v<n>.md` plus amendments to the brief's Revisions section. Orchestrator then re-dispatches `modeler` with the fix notes, re-runs geometry + review, and loops. This stage is optional, user-gated, and can run as many rounds as needed. It is also valid **out of flow** — the user can ping `id-designer` directly with render paths to run critique mode without going through the orchestrator.
 
@@ -73,6 +77,8 @@ designs/<name>/
 │   ├── modeling-report.json  ← modeler output (dims + feature inventory)
 │   ├── geometry-report.json  ← geometry-analyzer output (mesh analysis)
 │   ├── slicer-report.json    ← geometry-analyzer output (PrusaSlicer analysis)
+│   ├── strain-report.json    ← strain-analyzer output (raw safety-factor data, only if requiresStrainAnalysis)
+│   ├── review-strain.md      ← strain-analyzer output (human-readable, only if requiresStrainAnalysis)
 │   ├── validation-report.json ← pipeline output
 │   ├── review-printability.md ← print-reviewer output (verbose)
 │   ├── review-fitment.json   ← fit-reviewer output

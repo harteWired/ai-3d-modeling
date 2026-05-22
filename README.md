@@ -89,6 +89,9 @@ node bin/validate.js designs/humidity-output-v2
 # Run geometry analysis
 node bin/geometry-analyze.js designs/humidity-output-v2 --skip-slicer
 
+# Closed-form strain analysis (opt-in: requires `requiresStrainAnalysis: true` + `loadCase` in spec.json)
+node bin/strain-analyze.js designs/workout-dumbbell-holder
+
 # Check a multi-part assembly
 node bin/check-assembly.js assemblies/<name>.json
 ```
