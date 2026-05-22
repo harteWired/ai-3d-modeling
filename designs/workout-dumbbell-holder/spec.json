@@ -15,6 +15,43 @@
   },
   "watertight": true,
   "maxDimensions": { "x": 256, "y": 256, "z": 256 },
+  "requiresStrainAnalysis": true,
+  "loadCase": {
+    "description": "Cantilever bending: 3 lb (1.36 kg) rubber-coated dumbbell hangs in the saddle, weight acts at the saddle center in gravity direction (Fusion -Z). Holder is fixed in/around the treadmill rail via plug + sleeve. Critical sections analyzed: plug-root (where the plug emerges from the flange) and fork-plate-root (where the fork plate cantilever emerges from the sleeve).",
+    "material": "PLA-CF",
+    "minSafetyFactor": 3.0,
+    "forces": [
+      {
+        "magnitude_N": 13.3,
+        "direction": [0, 0, -1],
+        "applicationPoint_mm": [0, 90, -20],
+        "comment": "3 lb dumbbell × 9.81 m/s² = 13.3 N. Applied at saddle center (Y=90 from rail axis, Z=-20 below flange-top per saddle_center_z_below_flange_top)."
+      }
+    ],
+    "criticalSections": [
+      {
+        "name": "plug-root",
+        "location_mm": [0, 0, 0],
+        "shape": "hollow_rect",
+        "width_mm": 68.5,
+        "height_mm": 42.5,
+        "wall_thickness_mm": 3.0,
+        "cantilever_length_mm": 90,
+        "layerOrientation": "interlayer",
+        "comment": "Hollow rectangular plug walls (3 mm CF minimum) at the plug-to-flange transition. Width is X span (perpendicular to cantilever-bending direction); height is Y span (the dimension cubed in bh³/12, since bending stress acts along the cantilever +Y axis). In plug-vertical print orientation the bending moment is transmitted through layer interfaces at this junction — interlayer derate applies as a conservative bound."
+      },
+      {
+        "name": "fork-plate-root",
+        "location_mm": [0, 31.25, -28],
+        "shape": "solid_rect",
+        "width_mm": 83.5,
+        "height_mm": 12,
+        "cantilever_length_mm": 60,
+        "layerOrientation": "interlayer",
+        "comment": "Fork plate at the sleeve-fork junction (Y=31.25). Width is X span (post-v3.4 recentering, 88.5 → 83.5 mm); height is Z span (12 mm plate thickness — the bending depth). Print-review flagged this as the worst-case inter-layer tension location in plug-vertical print orientation. Closed-form rect is a simplification — the actual section is reinforced by top + bottom buttresses + ribs which a beam-theory calc ignores; FEA recommended to recover the buttress contribution."
+      }
+    ]
+  },
   "volume": {
     "min": 240,
     "max": 270,
