@@ -1,29 +1,24 @@
 {
   "name": "workout-dumbbell-holder",
   "version": "v3.4",
-  "description": "Internal-plug + external-sleeve clip-on cradle that mounts a rubber-coated dumbbell vertically (along the rail axis) on a treadmill rectangular extrusion. v3 adds an external sleeve for dual-engagement and lowers the fork ~20 mm below the rail-top face to reduce stress at the plug root.",
+  "description": "Internal-plug + external-sleeve clip-on cradle that mounts a rubber-coated dumbbell vertically on a treadmill rectangular extrusion. Fork plate below rail-top (20 mm offset) with top + bottom quarter-cylinder buttresses and curved bending-stiffness ribs. CF-reinforced filament; Fusion 360 modeling.",
   "dimensions": {
     "x": 88.5,
     "y": 141.25,
-    "z": 38
-  },
-  "notes": {
-    "dimensions": "v3 bbox. x = plug_wide (68.5) + 2×flange_overhang (10) = 88.5 mm. y = flange_y_back (31.25) + cradle_reach (90) + tine_above (20) = 141.25 mm. z = plug_depth (30) + flange_thickness (8) = 38 mm.",
-    "orientationAssumption": "Plug axis = Z (rail axis). Shaft direction = Z (parallel to rail — dumbbell hangs along the extrusion). Cradle extends in +Y direction (perpendicular to plug axis). Saddle profile is in XY plane (horizontal), shaft passes through slot vertically.",
-    "v1_v2_history": "v1 had shaft perpendicular to rail (drop-in vertical fork). v2 corrected to shaft parallel to rail but kept the plate above the flange. v3 adds sleeve + lowers fork below flange. See requirements.md v3 amendment for full rationale."
+    "z": 56
   },
   "defaultTolerance": 0.2,
   "tolerances": {
     "plug_narrow": 1.0,
     "plug_wide": 1.0,
-    "note": "1.0 mm/side user-specified clearance on both plug axes (generous sliding fit). CF-reinforced filament may shrink less than PLA — test pocket print required before full part. Project standard sliding fit is 0.35 mm/side; this is intentionally larger."
+    "note": "1.0 mm/side user-specified clearance on both plug axes (generous sliding fit). CF-reinforced filament may shrink less than PLA — test pocket print required before full part."
   },
   "watertight": true,
   "maxDimensions": { "x": 256, "y": 256, "z": 256 },
   "volume": {
-    "min": 35,
-    "max": 120,
-    "note": "Estimated range for a solid-shelled CF part with 3 mm minimum walls. Plug body + flange + cradle stem + two tines. Exact value depends on final tine wall thickness and infill — confirm after modeling."
+    "min": 240,
+    "max": 270,
+    "note": "v3.4 modeled volume: 253.5 cm³."
   },
   "echoedDimensions": {
     "plug_cross_section": { "x": 68.5, "y": 42.5, "z": 30 },
@@ -31,15 +26,15 @@
     "extrusion_od": { "x": 76.5, "y": 51.0, "z": 0 },
     "sleeve_id": { "x": 78.5, "y": 53.0, "z": 0 },
     "sleeve_od": { "x": 88.5, "y": 62.5, "z": 0 },
-    "sleeve_length_z": 30,
-    "fork_offset_below_top": 20,
-    "fork_thickness_z": 12,
+    "sleeve_length_z": 48,
+    "fork_tilt_deg": 0,
+    "saddle_center_y": 90,
+    "saddle_center_z_below_flange_top": 20,
+    "tine_tip_y": 110,
     "bell_diameter": { "x": 111, "y": 111, "z": 0 },
     "shaft_diameter": { "x": 46, "y": 46, "z": 0 },
     "flange_outer": { "x": 88.5, "y": 62.5, "z": 8 },
-    "cradle_saddle_radius": { "x": 23, "y": 23, "z": 0 },
-    "saddle_centerline_y": 90,
-    "tine_tip_y": 110
+    "cradle_saddle_radius": { "x": 23, "y": 23, "z": 0 }
   },
   "views": ["front", "right", "top", "iso"],
   "params": {
@@ -67,58 +62,67 @@
     "sleeve_wall_wide_axis": 5.0,
     "sleeve_wall_narrow_axis": 4.75,
     "sleeve_length": 48,
-    "sleeve_length_was_30": "extended +18mm in v3.3 to make room for the symmetric bottom buttress",
+    "sleeve_length_note": "Extended from 30 mm (v3) to 48 mm in v3.3 to provide landing surface for the bottom buttress.",
     "sleeve_minus_x_wall_removed": true,
-    "sleeve_minus_x_wall_removed_reason": "Treadmill control panel structure abuts the rail on the -X side per user-supplied reference photo. The sleeve's -X short wall and two -X corners are cut so the holder clears the console.",
+    "sleeve_minus_x_wall_removed_reason": "Treadmill control panel structure abuts the rail on the -X side per user-supplied reference photo.",
     "fork_offset_below_top": 20,
     "fork_thickness_z": 12,
-    "fork_plate_x": 88.5,
-    "fork_top_buttress_radius": 22,
-    "fork_top_buttress_x_range": "[-39.25, +44.25] mm — matches post-cut fork plate",
-    "fork_top_buttress_note": "r=22 quarter-cylinder gusset filling air pocket between fork-top (Z=-22) and flange-top edge (Z=0). Tangent points (Y=+31.25, Z=0) and (Y=+53.25, Z=-22).",
-    "fork_bottom_buttress_radius": 22,
-    "fork_bottom_buttress_note": "Mirror of top buttress reflected about Z=-28 (mid-fork). Tangent at (Y=+31.25, Z=-56) on new sleeve-bottom edge and (Y=+53.25, Z=-34) on fork bottom. Same X range as top buttress.",
-    "fork_shrunk_minus_x": "fork plate cut at X=[-44.25, -39.25] for Y=[+31.25, +110], Z=[-34, -22] so it no longer overhangs the buttress on the -X side",
-    "fork_bottom_ribs": {
-      "count": 2,
-      "x_centers": [-37, 37],
-      "thickness": 3,
-      "depth_z": 12,
-      "z_range": "[-46, -34]",
-      "y_range": "[+31.25, +105]",
-      "purpose": "add bending-stiffness section depth to each tine; inner ends join sleeve +Y wall, outer ends are free at 5mm before tine tip"
-    },
-    "cradle_reach": 90,
-    "saddle_radius": 23,
+    "fork_plate_x_min": -39.25,
+    "fork_plate_x_max": 44.25,
+    "fork_plate_x_note": "Post v3.4 recentering. −X cut retained for console clearance; +X trimmed to match.",
     "fork_spread_angle_included": 60,
     "fork_spread_angle_per_arm": 30,
-    "tine_above_saddle": 20,
+    "saddle_center_y": 90,
+    "tine_tip_y": 110,
+    "tine_extension_past_saddle": 20,
+    "saddle_radius": 23,
     "shaft_diameter": 46,
     "bell_diameter": 111,
     "bell_axial_height_estimate": 30,
+    "top_buttress_radius": 22,
+    "top_buttress_x_range": "[-39.25, +44.25] mm",
+    "top_buttress_tangent_a": "Y=+31.25, Z=0 (flange-top outer +Y edge — tangent vertical)",
+    "top_buttress_tangent_b": "Y=+53.25, Z=−22 (fork top face)",
+    "bottom_buttress_radius": 22,
+    "bottom_buttress_mirror_z": -28,
+    "bottom_buttress_tangent_a": "Y=+31.25, Z=−56 (sleeve-bottom outer +Y edge)",
+    "bottom_buttress_tangent_b": "Y=+53.25, Z=−34 (fork bottom face)",
+    "bottom_ribs_count": 2,
+    "bottom_ribs_x_centers": [-37, 37],
+    "bottom_ribs_thickness": 3,
+    "bottom_ribs_z_range": "[-46, -34]",
+    "bottom_ribs_y_range": "[+31.25, +105]",
+    "bottom_ribs_profile": "curved fin — full depth at inner end (Y=+31.25), tapers to zero at outer end (Y=+105)",
     "min_wall_cf": 3.0,
     "bore_clear": "confirmed — open end, no internal obstruction",
-    "vibration_retention": "gravity_only",
-    "plug_depth_note": "30 mm engagement, matched by sleeve_length 30 mm on the outside. v3 dual-engagement (plug + sleeve in opposition) approximately doubles the effective rail-holder reaction couple lever arm vs v1/v2 plug-alone.",
-    "v3_local_beefup_note": "At fork Z range (saddle centerline ± fork_thickness_z/2), the +Y sleeve wall is replaced by the fork plate base extending from Y=+26.5 (sleeve inner +Y face) outward to Y=+110 (tine tips). This locally thickens the sleeve at the fork junction without adding material elsewhere."
+    "vibration_retention": "gravity_only"
   },
   "requiresId": false,
   "modelingBackend": "fusion",
   "heroRender": {
-    "enabled": false
+    "enabled": true,
+    "quality": "hero",
+    "angles": ["rear-threequarter"],
+    "exportGlb": false
   },
   "testPrintCandidates": [
     {
       "feature": "Plug-to-extrusion fit",
-      "reason": "1.0 mm/side clearance was chosen to be conservative for CF-reinforced filament, which shrinks less than PLA. The project tolerance table is calibrated for plain PLA. A short plug test pocket (30 mm deep, full cross-section) should be printed and test-fitted in the extrusion bore before the full part is committed. If it fits with acceptable slop, proceed; if it binds, the clearance needs to increase.",
+      "reason": "1.0 mm/side clearance chosen conservatively for CF-reinforced filament. Test pocket (30 mm deep, full cross-section) before the full part.",
       "category": "fitment",
       "priority": "high"
     },
     {
-      "feature": "Plug wall minimum cross-section at cantilever root",
-      "reason": "The bending moment is highest at the plug-to-flange transition. CF-reinforced filament has lower impact toughness and potentially weaker inter-layer adhesion than unfilled PLA. The engagement depth has been reduced to 30 mm (from an initial 80 mm proposal), shortening the lever arm that resists the cantilever moment. A structural section test (short plug stub with flange) should be load-tested by hand before the full part is printed.",
-      "category": "sizing",
-      "priority": "high"
+      "feature": "Fork plate saddle arc",
+      "reason": "R23 saddle arc accuracy and plate surface quality should be verified before committing to the full part.",
+      "category": "fitment",
+      "priority": "medium"
+    },
+    {
+      "feature": "Buttress arc profile",
+      "reason": "r=22 quarter-cylinder buttress geometry on CF-reinforced filament — verify surface quality and layer adhesion at the arc transition.",
+      "category": "printability",
+      "priority": "low"
     }
   ]
 }

@@ -246,3 +246,19 @@ Buttress X range: [−39.25, +44.25] (matches the post-cut fork plate's X range,
 
 Volume increased from 225.4 cm³ (v3.1) to 243.4 cm³ (v3.2).
 
+### v3.3 update — sleeve growth + bottom buttress + ribs
+
+*(Modeled 2026-05-08; requirements block added retroactively in v4 intake.)*
+
+- **Sleeve extended** from 30 mm to 48 mm (Z range [−56, −8]) to provide a landing surface below the fork for the symmetric bottom buttress.
+- **Bottom buttress** added as a mirror of the top buttress about Z = −28 (mid-fork). r = 22 mm quarter-cylinder, tangent at (Y=+31.25, Z=−56) on new sleeve-bottom edge and (Y=+53.25, Z=−34) on fork bottom. Same X range as top buttress.
+- **Bottom ribs** added: two rectangular fins, X centers at [−37, +37], 3 mm thick, Z range [−46, −34], Y range [+31.25, +105], depth 12 mm. Purpose: add bending-stiffness section depth to each tine.
+- Volume ~243 cm³ (pre-rib addition).
+
+### v3.4 update — curved ribs + cantilever recentering
+
+*(Modeled 2026-05-08; requirements block added retroactively in v4 intake.)*
+
+- **Ribs reshaped** from rectangular fins to curved-fin profile: full depth at inner end (sleeve junction, Y=+31.25), tapers to zero at outer end (Y=+105), following a 3-point arc.
+- **Cantilever recentered in X:** after the v3.1 −X wall cut, the fork plate was asymmetric (+X tine wall 9.7 mm, −X tine wall 4.7 mm). Cut applied to +X overhang matching the −X cut, restoring 4.7 mm tine walls symmetrically. Fork plate X range trimmed to [−39.25, +44.25] from the +X side to match.
+- **Final v3.4 geometry:** volume 253.5 cm³, bbox 88.5 × 141.25 × 56 mm.
