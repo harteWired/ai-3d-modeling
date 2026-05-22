@@ -17,15 +17,15 @@
   "maxDimensions": { "x": 256, "y": 256, "z": 256 },
   "requiresStrainAnalysis": true,
   "loadCase": {
-    "description": "Cantilever bending: 3 lb (1.36 kg) rubber-coated dumbbell hangs in the saddle, weight acts at the saddle center in gravity direction (Fusion -Z). Holder is fixed in/around the treadmill rail via plug + sleeve. Critical sections analyzed: plug-root (where the plug emerges from the flange) and fork-plate-root (where the fork plate cantilever emerges from the sleeve).",
+    "description": "Cantilever bending: 15 lb (6.80 kg) rubber-coated dumbbell hangs in the saddle, weight acts at the saddle center in gravity direction (Fusion -Z). Holder is fixed in/around the treadmill rail via plug + sleeve. Critical sections analyzed: plug-root (where the plug emerges from the flange) and fork-plate-root (where the fork plate cantilever emerges from the sleeve).",
     "material": "PLA-CF",
     "minSafetyFactor": 3.0,
     "forces": [
       {
-        "magnitude_N": 13.3,
+        "magnitude_N": 66.7,
         "direction": [0, 0, -1],
         "applicationPoint_mm": [0, 90, -20],
-        "comment": "3 lb dumbbell × 9.81 m/s² = 13.3 N. Applied at saddle center (Y=90 from rail axis, Z=-20 below flange-top per saddle_center_z_below_flange_top)."
+        "comment": "15 lb dumbbell × 4.448 N/lb = 66.7 N. Applied at saddle center (Y=90 from rail axis, Z=-20 below flange-top per saddle_center_z_below_flange_top). Earlier spec said 1-3 lb — corrected after user flagged that the actual dumbbells are 15 lb."
       }
     ],
     "criticalSections": [

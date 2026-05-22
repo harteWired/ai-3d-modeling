@@ -2,7 +2,7 @@
   "skipped": false,
   "design_name": "workout-dumbbell-holder",
   "design_version": "v3.4",
-  "description": "Cantilever bending: 3 lb (1.36 kg) rubber-coated dumbbell hangs in the saddle, weight acts at the saddle center in gravity direction (Fusion -Z). Holder is fixed in/around the treadmill rail via plug + sleeve. Critical sections analyzed: plug-root (where the plug emerges from the flange) and fork-plate-root (where the fork plate cantilever emerges from the sleeve).",
+  "description": "Cantilever bending: 15 lb (6.80 kg) rubber-coated dumbbell hangs in the saddle, weight acts at the saddle center in gravity direction (Fusion -Z). Holder is fixed in/around the treadmill rail via plug + sleeve. Critical sections analyzed: plug-root (where the plug emerges from the flange) and fork-plate-root (where the fork plate cantilever emerges from the sleeve).",
   "material": {
     "displayName": "PLA Carbon Fiber",
     "yield_MPa": 70,
@@ -16,7 +16,7 @@
   "min_safety_factor": 3.0,
   "forces": [
     {
-      "magnitude_N": 13.3,
+      "magnitude_N": 66.7,
       "direction": [
         0,
         0,
@@ -27,7 +27,7 @@
         90,
         -20
       ],
-      "comment": "3 lb dumbbell \u00d7 9.81 m/s\u00b2 = 13.3 N. Applied at saddle center (Y=90 from rail axis, Z=-20 below flange-top per saddle_center_z_below_flange_top)."
+      "comment": "15 lb dumbbell \u00d7 4.448 N/lb = 66.7 N. Applied at saddle center (Y=90 from rail axis, Z=-20 below flange-top per saddle_center_z_below_flange_top). Earlier spec said 1-3 lb \u2014 corrected after user flagged that the actual dumbbells are 15 lb."
     }
   ],
   "sections": [
@@ -42,33 +42,33 @@
       "I_mm4": 184937.5,
       "c_mm": 21.25,
       "area_mm2": 630.0,
-      "moment_Nmm": 1197.0,
+      "moment_Nmm": 6003.0,
       "moment_vector_Nmm": [
-        -1197.0,
+        -6003.0,
         0.0,
         0.0
       ],
       "moment_breakdown": [
         {
-          "force_N": 13.3,
+          "force_N": 66.7,
           "lever_arm_mm": 92.19544457292888,
           "moment_components_Nmm": [
-            -1197.0,
+            -6003.0,
             0.0,
             0.0
           ],
-          "moment_magnitude_Nmm": 1197.0
+          "moment_magnitude_Nmm": 6003.0
         }
       ],
-      "sigma_MPa": 0.1375397093612707,
+      "sigma_MPa": 0.6897668131125381,
       "sigma_allow_MPa": 31.5,
       "allowable_basis": "yield \u00d7 interlayer_derate (0.45)",
       "layer_orientation": "interlayer",
-      "safety_factor": 229.0247678018576,
+      "safety_factor": 45.66760737278419,
       "min_safety_factor": 3.0,
       "pass": true,
       "cantilever_length_mm": 90,
-      "deflection_mm": 0.002496519094288611,
+      "deflection_mm": 0.012520137111958674,
       "fea_recommended": false,
       "fea_reasons": [],
       "comment": "Hollow rectangular plug walls (3 mm CF minimum) at the plug-to-flange transition. Width is X span (perpendicular to cantilever-bending direction); height is Y span (the dimension cubed in bh\u00b3/12, since bending stress acts along the cantilever +Y axis). In plug-vertical print orientation the bending moment is transmitted through layer interfaces at this junction \u2014 interlayer derate applies as a conservative bound."
@@ -84,33 +84,33 @@
       "I_mm4": 12024.0,
       "c_mm": 6.0,
       "area_mm2": 1002.0,
-      "moment_Nmm": 781.375,
+      "moment_Nmm": 3918.625,
       "moment_vector_Nmm": [
-        -781.375,
+        -3918.625,
         0.0,
         0.0
       ],
       "moment_breakdown": [
         {
-          "force_N": 13.3,
+          "force_N": 66.7,
           "lever_arm_mm": 59.292179079537966,
           "moment_components_Nmm": [
-            -781.375,
+            -3918.625,
             0.0,
             0.0
           ],
-          "moment_magnitude_Nmm": 781.375
+          "moment_magnitude_Nmm": 3918.625
         }
       ],
-      "sigma_MPa": 0.38990768463073855,
+      "sigma_MPa": 1.9554016966067864,
       "sigma_allow_MPa": 31.5,
       "allowable_basis": "yield \u00d7 interlayer_derate (0.45)",
       "layer_orientation": "interlayer",
-      "safety_factor": 80.78835386338186,
+      "safety_factor": 16.109221984752306,
       "min_safety_factor": 3.0,
       "pass": true,
       "cantilever_length_mm": 60,
-      "deflection_mm": 0.011377245508982036,
+      "deflection_mm": 0.057057313943541486,
       "fea_recommended": false,
       "fea_reasons": [],
       "comment": "Fork plate at the sleeve-fork junction (Y=31.25). Width is X span (post-v3.4 recentering, 88.5 \u2192 83.5 mm); height is Z span (12 mm plate thickness \u2014 the bending depth). Print-review flagged this as the worst-case inter-layer tension location in plug-vertical print orientation. Closed-form rect is a simplification \u2014 the actual section is reinforced by top + bottom buttresses + ribs which a beam-theory calc ignores; FEA recommended to recover the buttress contribution."
@@ -118,6 +118,6 @@
   ],
   "overall_pass": true,
   "worst_section": "fork-plate-root",
-  "worst_safety_factor": 80.78835386338186,
+  "worst_safety_factor": 16.109221984752306,
   "fea_recommended": false
 }

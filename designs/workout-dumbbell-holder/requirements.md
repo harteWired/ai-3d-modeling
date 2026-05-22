@@ -58,7 +58,7 @@ Alternative orientation: cradle face-down on bed with plug pointing up. This kee
 - **Mating interface:** Slides into extrusion ID 44.5 mm × 70.5 mm, inner corner r < 3 mm
   - Fit type: sliding / clearance (1 mm/side user-specified, 2 mm diametric gap)
   - Resulting gap: 1.0 mm on each face — easy insertion, some rattle; acceptable for a gravity-held sliding fit
-- **Load case (cantilever):** Dumbbell 1–3 lb (0.45–1.36 kg) × 9.81 m/s² ≈ 4.4–13.3 N applied at the V-seat center, approximately 70 mm from the extrusion face (cradle_reach). Bending moment at plug root: 4.4–13.3 N × (70 + 8) mm = roughly 340–1040 N·mm. CF-reinforced material at 30 mm engagement depth is shorter than the original 80 mm proposal — see resolved decisions note. Print-reviewer must confirm that wall cross-section at the root is adequate.
+- **Load case (cantilever):** Dumbbell 15 lb (6.80 kg) × 9.81 m/s² = 66.7 N applied at the V-seat center, 90 mm from the rail centerline (v3 reach). Bending moment at plug root: 66.7 N × 98 mm ≈ 6500 N·mm. CF-reinforced material at 30 mm engagement depth is shorter than the original 80 mm proposal — see resolved decisions note. The `strain-analyzer` agent computes σ = Mc/I at declared critical sections via `loadCase` in spec.json. Earlier requirement drafts cited 1–3 lb — corrected after the user flagged the actual dumbbell weight.
 - **Printability note:** 30 mm tall rectangular section prints cleanly. No overhangs. No bridges. No flags.
 
 ### Feature 2: Seating Flange
@@ -123,7 +123,7 @@ All questions from the initial spec are now closed:
 
 6. **Vibration retention:** Gravity only + deep engagement. No setscrew, friction pad, or snap tab. User-confirmed.
 
-7. **Plug engagement depth:** 30 mm. User-confirmed. This is shorter than the initial 80 mm proposal. Trade: shorter engagement reduces the moment-resisting lever arm inside the bore. The bending moment at the root (~340–1040 N·mm) must be resisted by 30 mm of plug wall contact against the extrusion ID. CF-reinforced filament and the user's acceptance of this trade are on record. Print-reviewer must confirm wall section adequacy.
+7. **Plug engagement depth:** 30 mm. User-confirmed. This is shorter than the initial 80 mm proposal. Trade: shorter engagement reduces the moment-resisting lever arm inside the bore. The bending moment at the root (~6500 N·mm under the 15 lb load case) must be resisted by 30 mm of plug wall contact against the extrusion ID. CF-reinforced filament and the user's acceptance of this trade are on record. `strain-analyzer` confirms the plug-root section passes at SF 45.7× with the closed-form / interlayer-derate model.
 
 ## Printability Pre-Screen
 
@@ -214,9 +214,9 @@ Well inside X1C 256 mm build volume.
 
 ### v3 load-case summary
 
-- Same dumbbell mass: 0.45–1.36 kg → 4.4–13.3 N at saddle.
+- Dumbbell mass corrected to 6.80 kg (15 lb) → 66.7 N at saddle. Earlier requirement drafts cited 0.45–1.36 kg (1–3 lb); the actual dumbbells are 15 lb each.
 - Cantilever lever arm in Y: 90 mm (from rail center).
-- Bending moment about plug-fixation horizontal axis: 4.4–13.3 N × 90 mm = **400–1200 N·mm**. (Up from ~340–1040 N·mm in v1/v2 because cradle reach increased from 70 to 90 mm.)
+- Bending moment about plug-fixation horizontal axis: 66.7 N × 98 mm ≈ **6500 N·mm** (saddle 90 mm from rail centerline + 8 mm flange thickness). Earlier requirement drafts computed 400–1200 N·mm based on the now-corrected 1–3 lb assumption; the real number is ~5×.
 - This moment is now resisted by **plug + sleeve in opposition** rather than plug alone. The plug pushes against the −Y interior wall of the rail at its top, the sleeve pushes against the +Y exterior wall of the rail at its bottom (or vice-versa depending on direction of tip-out). The effective lever arm of the rail-holder reaction couple is now ≈ `plug_depth + sleeve_length = 60 mm` (twice the v1/v2 value of 30 mm), so the reaction force at each engagement is roughly half of v1/v2.
 - Net structural improvement: the moment arm of the dumbbell is slightly longer in v3 (90 vs 70), so the input moment is ~30 % larger — but the rail-holder reaction couple has 2× the effective lever arm, so each engagement sees ~35 % less force than in v1/v2. Overall stiffness increases substantially.
 

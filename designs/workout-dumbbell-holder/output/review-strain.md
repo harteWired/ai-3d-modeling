@@ -1,8 +1,8 @@
 # Strain analysis — workout-dumbbell-holder v3.4
 
-**Status:** PASS (worst section: fork-plate-root, safety factor 80.8)
+**Status:** PASS (worst section: fork-plate-root, safety factor 16.1)
 
-Cantilever bending: 3 lb (1.36 kg) rubber-coated dumbbell hangs in the saddle, weight acts at the saddle center in gravity direction (Fusion -Z). Holder is fixed in/around the treadmill rail via plug + sleeve. Critical sections analyzed: plug-root (where the plug emerges from the flange) and fork-plate-root (where the fork plate cantilever emerges from the sleeve).
+Cantilever bending: 15 lb (6.80 kg) rubber-coated dumbbell hangs in the saddle, weight acts at the saddle center in gravity direction (Fusion -Z). Holder is fixed in/around the treadmill rail via plug + sleeve. Critical sections analyzed: plug-root (where the plug emerges from the flange) and fork-plate-root (where the fork plate cantilever emerges from the sleeve).
 
 ## Material
 
@@ -20,13 +20,13 @@ Cantilever bending: 3 lb (1.36 kg) rubber-coated dumbbell hangs in the saddle, w
 
 | # | Magnitude (N) | Direction | Application point (mm) | Comment |
 |---|---|---|---|---|
-| 1 | 13.3 | [0.00, 0.00, -1.00] | [0.0, 90.0, -20.0] | 3 lb dumbbell × 9.81 m/s² = 13.3 N. Applied at saddle center (Y=90 from rail axis, Z=-20 below flange-top per saddle_center_z_below_flange_top). |
+| 1 | 66.7 | [0.00, 0.00, -1.00] | [0.0, 90.0, -20.0] | 15 lb dumbbell × 4.448 N/lb = 66.7 N. Applied at saddle center (Y=90 from rail axis, Z=-20 below flange-top per saddle_center_z_below_flange_top). Earlier spec said 1-3 lb — corrected after user flagged that the actual dumbbells are 15 lb. |
 
 ## Critical sections
 
 Minimum safety factor required: **3.00**
 
-### plug-root — PASS (SF = 229.0)
+### plug-root — PASS (SF = 45.7)
 
 Hollow rectangular plug walls (3 mm CF minimum) at the plug-to-flange transition. Width is X span (perpendicular to cantilever-bending direction); height is Y span (the dimension cubed in bh³/12, since bending stress acts along the cantilever +Y axis). In plug-vertical print orientation the bending moment is transmitted through layer interfaces at this junction — interlayer derate applies as a conservative bound.
 
@@ -37,14 +37,14 @@ Hollow rectangular plug walls (3 mm CF minimum) at the plug-to-flange transition
 | Area | 630.0 mm² |
 | Moment of inertia I | 184938 mm⁴ |
 | Extreme fiber c | 21.3 mm |
-| Bending moment M | 1197 N·mm |
-| Bending stress σ = Mc/I | 0.138 MPa |
+| Bending moment M | 6003 N·mm |
+| Bending stress σ = Mc/I | 0.690 MPa |
 | Layer orientation | interlayer |
 | Allowable σ | 31.5 MPa (yield × interlayer_derate (0.45)) |
-| **Safety factor** | **229.0** (need ≥ 3.00) |
-| Tip deflection (cantilever, L = 90.0 mm) | 0.00 mm |
+| **Safety factor** | **45.7** (need ≥ 3.00) |
+| Tip deflection (cantilever, L = 90.0 mm) | 0.01 mm |
 
-### fork-plate-root — PASS (SF = 80.8)
+### fork-plate-root — PASS (SF = 16.1)
 
 Fork plate at the sleeve-fork junction (Y=31.25). Width is X span (post-v3.4 recentering, 88.5 → 83.5 mm); height is Z span (12 mm plate thickness — the bending depth). Print-review flagged this as the worst-case inter-layer tension location in plug-vertical print orientation. Closed-form rect is a simplification — the actual section is reinforced by top + bottom buttresses + ribs which a beam-theory calc ignores; FEA recommended to recover the buttress contribution.
 
@@ -55,12 +55,12 @@ Fork plate at the sleeve-fork junction (Y=31.25). Width is X span (post-v3.4 rec
 | Area | 1002 mm² |
 | Moment of inertia I | 12024 mm⁴ |
 | Extreme fiber c | 6.00 mm |
-| Bending moment M | 781.4 N·mm |
-| Bending stress σ = Mc/I | 0.390 MPa |
+| Bending moment M | 3919 N·mm |
+| Bending stress σ = Mc/I | 1.955 MPa |
 | Layer orientation | interlayer |
 | Allowable σ | 31.5 MPa (yield × interlayer_derate (0.45)) |
-| **Safety factor** | **80.8** (need ≥ 3.00) |
-| Tip deflection (cantilever, L = 60.0 mm) | 0.01 mm |
+| **Safety factor** | **16.1** (need ≥ 3.00) |
+| Tip deflection (cantilever, L = 60.0 mm) | 0.06 mm |
 
 ---
 
