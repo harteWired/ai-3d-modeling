@@ -90,16 +90,22 @@
   <text x="58" y="524" class="section-desc">Ground-truth mesh inspection · slicer-confirmed printability data</text>
 
   <!-- geometry-analyzer -->
-  <rect x="280" y="540" width="240" height="60" rx="8" fill="#24222f" stroke="rgba(245,239,224,0.18)" stroke-width="1.8"/>
-  <text x="400" y="557" text-anchor="middle" class="node-type">AGENT</text>
-  <text x="400" y="575" text-anchor="middle" class="node-title">geometry-analyzer</text>
-  <text x="400" y="591" text-anchor="middle" class="node-tool" opacity="0.85">trimesh · PrusaSlicer (G-code)</text>
+  <rect x="160" y="540" width="240" height="60" rx="8" fill="#24222f" stroke="rgba(245,239,224,0.18)" stroke-width="1.8"/>
+  <text x="280" y="557" text-anchor="middle" class="node-type">AGENT</text>
+  <text x="280" y="575" text-anchor="middle" class="node-title">geometry-analyzer</text>
+  <text x="280" y="591" text-anchor="middle" class="node-tool" opacity="0.85">trimesh · PrusaSlicer (G-code)</text>
 
-  <!-- fit-reviewer -->
-  <rect x="760" y="540" width="240" height="60" rx="8" fill="#24222f" stroke="#6fd1b4" stroke-width="1.8"/>
-  <text x="880" y="557" text-anchor="middle" class="node-type">IF MULTI-PART</text>
-  <text x="880" y="575" text-anchor="middle" class="node-title">fit-reviewer</text>
-  <text x="880" y="591" text-anchor="middle" class="node-tool" opacity="0.85">trimesh · PyVista (interference)</text>
+  <!-- strain-analyzer (conditional, load-bearing) -->
+  <rect x="520" y="540" width="240" height="60" rx="8" fill="#24222f" stroke="#6fd1b4" stroke-width="1.8"/>
+  <text x="640" y="557" text-anchor="middle" class="node-type">IF requiresStrainAnalysis</text>
+  <text x="640" y="575" text-anchor="middle" class="node-title">strain-analyzer</text>
+  <text x="640" y="591" text-anchor="middle" class="node-tool" opacity="0.85">closed-form beam theory · σ = Mc/I</text>
+
+  <!-- fit-reviewer (conditional, multi-part) -->
+  <rect x="880" y="540" width="240" height="60" rx="8" fill="#24222f" stroke="#6fd1b4" stroke-width="1.8"/>
+  <text x="1000" y="557" text-anchor="middle" class="node-type">IF MULTI-PART</text>
+  <text x="1000" y="575" text-anchor="middle" class="node-title">fit-reviewer</text>
+  <text x="1000" y="591" text-anchor="middle" class="node-tool" opacity="0.85">trimesh · PyVista (interference)</text>
 
   <!-- ============ SECTION 04 // REVIEW ============ -->
   <rect x="40" y="630" width="1200" height="120" rx="16" fill="none" stroke="rgba(245,239,224,0.12)" stroke-width="1.4"/>
@@ -172,13 +178,15 @@
   <path d="M 400,438 L 400,460 L 640,460" fill="none" stroke="#c9c5b6" stroke-width="1.6"/>
   <path d="M 880,438 L 880,460 L 640,460" fill="none" stroke="#6fd1b4" stroke-width="1.6" stroke-dasharray="6,4"/>
 
-  <!-- merge → geometry-analyzer + fit-reviewer (whichever ran, output flows here) -->
-  <path d="M 640,460 L 400,540" fill="none" stroke="#c9c5b6" stroke-width="1.6" marker-end="url(#arrowA)"/>
-  <path d="M 640,460 L 880,540" fill="none" stroke="#6fd1b4" stroke-width="1.6" marker-end="url(#arrowB)" stroke-dasharray="6,4"/>
+  <!-- merge → geometry-analyzer + strain-analyzer + fit-reviewer -->
+  <path d="M 640,460 L 280,540" fill="none" stroke="#c9c5b6" stroke-width="1.6" marker-end="url(#arrowA)"/>
+  <path d="M 640,460 L 640,540" fill="none" stroke="#6fd1b4" stroke-width="1.6" marker-end="url(#arrowB)" stroke-dasharray="6,4"/>
+  <path d="M 640,460 L 1000,540" fill="none" stroke="#6fd1b4" stroke-width="1.6" marker-end="url(#arrowB)" stroke-dasharray="6,4"/>
 
-  <!-- analyzer + fit-reviewer → print-reviewer -->
-  <path d="M 400,600 L 400,628 L 600,628 L 640,688" fill="none" stroke="#c9c5b6" stroke-width="1.6" marker-end="url(#arrowA)"/>
-  <path d="M 880,600 L 880,628 L 680,628 L 640,688" fill="none" stroke="#6fd1b4" stroke-width="1.6" marker-end="url(#arrowB)" stroke-dasharray="6,4"/>
+  <!-- analyzers → print-reviewer -->
+  <path d="M 280,600 L 280,640 L 600,640 L 640,688" fill="none" stroke="#c9c5b6" stroke-width="1.6" marker-end="url(#arrowA)"/>
+  <path d="M 640,600 L 640,688" fill="none" stroke="#6fd1b4" stroke-width="1.6" marker-end="url(#arrowB)" stroke-dasharray="6,4"/>
+  <path d="M 1000,600 L 1000,640 L 680,640 L 640,688" fill="none" stroke="#6fd1b4" stroke-width="1.6" marker-end="url(#arrowB)" stroke-dasharray="6,4"/>
 
   <!-- print-reviewer → test-print-planner -->
   <path d="M 640,744 L 640,808 L 400,808 L 400,828" fill="none" stroke="#c9c5b6" stroke-width="1.6" marker-end="url(#arrowA)"/>
@@ -214,11 +222,14 @@
   <rect x="822" y="448" width="116" height="20" rx="6" fill="#15151e"/>
   <text x="880" y="462" text-anchor="middle" class="arrow-label">.f3d · STL</text>
 
-  <rect x="464" y="618" width="170" height="20" rx="6" fill="#15151e"/>
-  <text x="549" y="632" text-anchor="middle" class="arrow-label">geometry-report.json</text>
+  <rect x="344" y="618" width="170" height="20" rx="6" fill="#15151e"/>
+  <text x="429" y="632" text-anchor="middle" class="arrow-label">geometry-report.json</text>
 
-  <rect x="688" y="618" width="106" height="20" rx="6" fill="#15151e"/>
-  <text x="741" y="632" text-anchor="middle" class="arrow-label">fitment.json</text>
+  <rect x="560" y="618" width="160" height="20" rx="6" fill="#15151e"/>
+  <text x="640" y="632" text-anchor="middle" class="arrow-label">strain-report.json</text>
+
+  <rect x="766" y="618" width="106" height="20" rx="6" fill="#15151e"/>
+  <text x="819" y="632" text-anchor="middle" class="arrow-label">fitment.json</text>
 
   <rect x="556" y="780" width="168" height="20" rx="6" fill="#15151e"/>
   <text x="640" y="794" text-anchor="middle" class="arrow-label">review-printability.md</text>
@@ -248,5 +259,6 @@
   <line x1="1010" y1="1075" x2="1040" y2="1075" stroke="#c9c5b6" stroke-width="1.4" marker-end="url(#arrowA)" stroke-dasharray="2,5"/>
   <text x="1050" y="1079" class="legend">Optional skip</text>
 
-  <text x="640" y="1115" text-anchor="middle" class="footnote">id-designer (optional, pre-spec) runs when spec.requiresId · id/brief.md feeds 02 // BUILD as the aesthetic contract</text>
+  <text x="640" y="1110" text-anchor="middle" class="footnote">id-designer (optional, pre-spec) runs when spec.requiresId · id/brief.md feeds 02 // BUILD as the aesthetic contract</text>
+  <text x="640" y="1128" text-anchor="middle" class="footnote">strain-analyzer (optional, in 03 // ANALYZE) runs when spec.requiresStrainAnalysis · reads loadCase + scad-lib/materials.json · gates on safety factor</text>
 </svg>

@@ -14,8 +14,10 @@ This is an AI-native parametric modeling pipeline built on [Claude Code](https:/
 - **Industrial design loop** — conversational `id-designer` agent runs a mockup-first aesthetic pass before modeling on visible parts (`requiresId: true`). After renders land, critique mode produces a concrete fix list for the modeler. Shared aesthetic library at `designs/_id-library/`.
 - **Ground-truth printability** — trimesh slices the mesh at every layer height; PrusaSlicer confirms support and bridge behavior from actual G-code
 - **Automated review** — every overhang, bridge, wall thickness, and mating clearance is checked against FDM/PLA limits before the part ships
+- **Closed-form strain analysis** — load-bearing parts (`requiresStrainAnalysis: true`) declare a `loadCase` block; `strain-analyzer` runs beam-theory σ = Mc/I against the declared critical sections and reports safety factors with FDM interlayer derate. Flags FEA when the closed-form margin is tight.
 - **Test print planning** — critical fitment interfaces get broken out into minimal-material hollow test pieces so you verify fit before committing to a full print
 - **Multi-part assemblies** — interference and fit checks across parts using trimesh + PyVista
+- **GPU-aware hero renders** — Blender Cycles auto-detects OPTIX / CUDA / HIP / METAL / ONEAPI and falls back to CPU. Override with `CYCLES_DEVICE`. CPU-only contributors see no regression.
 
 ## Designs
 
@@ -34,20 +36,27 @@ This is an AI-native parametric modeling pipeline built on [Claude Code](https:/
 
 ## How It Works
 
-Seven specialized agents split the work — each owns a stage, communicates through structured files, and never sees the full conversation history. The orchestrator (top-level Claude session) manages user dialogue and dispatches agents.
+Specialized agents split the work — each owns a stage, communicates through structured files, and never sees the full conversation history. The orchestrator (top-level Claude session) manages user dialogue and dispatches agents. Two stages are opt-in via spec flags: `id-designer` (aesthetic loop, `requiresId`) and `strain-analyzer` (mechanical safety factor, `requiresStrainAnalysis`).
 
-![AI 3D Modeling Pipeline — spec-writer creates requirements; modeler-orchestrator generates geometry with optional id-designer for aesthetic passes. geometry-analyzer slices the mesh; fit-reviewer checks multi-part assemblies. print-reviewer gates on FDM limits—pass continues to test-print-planner, fail loops back to modeler. test modeler produces test pieces; shipper publishes.](./docs/images/pipeline.svg)
+![AI 3D Modeling Pipeline — spec-writer creates requirements; modeler / modeler-fusion generate geometry with optional id-designer for aesthetic passes. geometry-analyzer slices the mesh; fit-reviewer checks multi-part assemblies; strain-analyzer runs closed-form beam-theory on load-bearing parts. print-reviewer gates on FDM limits — pass continues to test-print-planner, fail loops back to modeler. test modeler produces test pieces; shipper publishes via Blender hero renders.](./docs/images/pipeline.svg)
+
+**Diagrams in this repo:**
+
+- [`docs/images/pipeline.svg`](docs/images/pipeline.svg) — editorial SVG pipeline overview (above). Authoritative architecture diagram, kept in sync with `AGENT-WORKFLOW.md`.
+- Per-design hero renders live under [`docs/images/<design>/`](docs/images/) — Blender Cycles, catalog-style preset (`scripts/_render_device.py` + `scad-lib/blender-presets/studio.py`).
+- Diagram style: editorial SVG for the pipeline; Mermaid for any inline control-flow snippets in design docs. No ASCII diagrams in published READMEs.
 
 <details>
 <summary><b>Agent details</b></summary>
 
 | Agent | What it does | Key outputs |
 |-------|-------------|-------------|
-| **spec-writer** | Turns user intent into structured requirements. Flags tight tolerances, printability risks, test print candidates. Sets `modelingBackend` and `requiresId`. | `requirements.md`, `spec.json` |
+| **spec-writer** | Turns user intent into structured requirements. Flags tight tolerances, printability risks, test print candidates. Sets `modelingBackend`, `requiresId`, `requiresStrainAnalysis`. | `requirements.md`, `spec.json` |
 | **id-designer** | Conversational industrial-design agent. Two modes: *design* (mockup-first aesthetic loop before modeling) and *critique* (post-render fix list after each iteration). Only runs when `requiresId: true`. | `id/brief.md`, `id/modeler-notes-v*.md` |
 | **modeler** | Writes OpenSCAD, iterates against validation until PASS. Reads `id/brief.md` as the aesthetic contract. Produces a feature inventory in print-Z order for the reviewer. | `<name>.scad`, `modeling-report.json` |
 | **modeler-fusion** | Builds geometry in Autodesk Fusion 360 via MCP. Same input/output contract as **modeler**; used when `modelingBackend: "fusion"` for organic shapes (lofts, sweeps, T-splines). Exports STL + F3D. | `output/<name>.stl`, `modeling-report.json` |
 | **geometry-analyzer** | Slices the rendered STL at every layer height (trimesh). Optionally runs PrusaSlicer for G-code-level bridge/support analysis. Works on STL regardless of modeling backend. | `geometry-report.json`, `slicer-report.json` |
+| **strain-analyzer** | Closed-form beam-theory on declared critical sections. Reports σ = Mc/I, allowable stress (with FDM interlayer derate), safety factor, tip deflection. Flags FEA when the closed-form margin is tight or the section isn't a clean prism. Only runs when `requiresStrainAnalysis: true`. | `strain-report.json`, `review-strain.md` |
 | **print-reviewer** | Checks every feature transition, overhang, bridge, wall thickness, and mating clearance against FDM limits. Classifies bridges as functional or avoidable. Read-only. | `review-printability.md` |
 | **fit-reviewer** | Mesh-based interference and clearance checks for multi-part assemblies. | `review-fitment.json` |
 | **test-print-planner** | Identifies critical geometries — tight fitment, near-limit overhangs, novel features — and specs minimal-material test pieces. Hollow volumes by default. | `test-prints.json`, stub design dirs |
@@ -61,8 +70,8 @@ Seven specialized agents split the work — each owns a stage, communicates thro
 | Complexity | Criteria | Pipeline |
 |---|---|---|
 | **Simple** | Single part, ≤5 features | `spec-writer` → `modeler` → `shipper` |
-| **Medium** | Single part, >5 features | Full pipeline with geometry analysis, print review, test prints |
-| **Complex** | Multi-part assembly | Parallel modelers + analyzers, fit-reviewer added, parallel test prints |
+| **Medium** | Single part, >5 features | Full pipeline with geometry analysis, print review, test prints; `strain-analyzer` if load-bearing |
+| **Complex** | Multi-part assembly | Parallel modelers + analyzers, fit-reviewer added, parallel test prints; `strain-analyzer` per loaded part |
 
 </details>
 
@@ -121,7 +130,9 @@ designs/<name>/
 ├── output/
 │   ├── <name>.stl           # Print-ready mesh
 │   ├── geometry-report.json # Mesh analysis (trimesh)
+│   ├── strain-report.json   # Beam-theory safety factor (if requiresStrainAnalysis)
 │   ├── review-printability.md
+│   ├── review-strain.md     # Human-readable strain review (if requiresStrainAnalysis)
 │   └── test-prints.json     # Test print manifest
 └── test-prints/             # Minimal-material test pieces
     └── <id>/                # Each gets its own modeler run
@@ -129,6 +140,7 @@ designs/<name>/
 scad-lib/
 ├── fdm-pla.scad             # FDM/PLA tolerance constants
 ├── bambu-x1c.scad           # Build volume assertions
+├── materials.json           # Yield, modulus, FDM interlayer derate per material
 └── common.scad              # fdm_hole(), chamfer_cylinder(), etc.
 ```
 
@@ -155,6 +167,7 @@ Every design includes `fdm-pla.scad`. These are the constants — derived from r
 | **v3** | Ground-truth geometry | geometry-analyzer produces mesh-based reports. Reviewer consumes quantitative data, not source code |
 | **v4** | Test print planning | test-print-planner identifies critical geometries. Upstream agents flag candidates. Avoidable bridges get flagged, not silently passed |
 | **v4.1** | CLI-Anything integration | OpenSCAD rendering via `cli-anything-openscad` Python CLI — parallel views, JSON output with auto-parsed dimensions, thread-safe Xvfb. Replaces direct subprocess management |
+| **v4.2** | Strain analysis + GPU renders | `strain-analyzer` adds closed-form bending stress + safety factor as an opt-in pipeline stage (`requiresStrainAnalysis` flag, `loadCase` block in spec.json, `scad-lib/materials.json` library). Blender Cycles renders pick GPU via `CYCLES_DEVICE` autodetect with safe CPU fallback for contributors without a GPU |
 
 ## License
 
