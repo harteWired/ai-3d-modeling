@@ -26,6 +26,9 @@ import sys
 
 import bpy
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _render_device import configure_cycles_device  # noqa: E402
+
 QUALITY_PRESETS = {
     # Quick iteration — Eevee, low samples, no denoiser
     "draft": {
@@ -167,7 +170,7 @@ def configure_render(scene, quality, args):
         scene.cycles.samples = quality["samples"]
         scene.cycles.use_adaptive_sampling = True
         scene.cycles.adaptive_threshold = 0.005 if args.quality == "hero" else 0.01
-        scene.cycles.device = "CPU"
+        configure_cycles_device(scene)
         if quality["use_denoiser"]:
             scene.cycles.use_denoising = True
             for candidate in ("OPENIMAGEDENOISE", "OPTIX", "NLM"):

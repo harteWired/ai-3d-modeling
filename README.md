@@ -96,6 +96,18 @@ node bin/check-assembly.js assemblies/<name>.json
 > [!IMPORTANT]
 > `setup.sh` requires sudo — it installs system packages and creates a Python venv. Run it once per environment.
 
+### Cycles compute device (hero renders)
+
+Blender hero renders auto-detect a GPU and fall back to CPU when none is available. Override via the `CYCLES_DEVICE` environment variable:
+
+```bash
+CYCLES_DEVICE=CPU   blender --background --python scripts/render-hero.py -- ...   # force CPU
+CYCLES_DEVICE=GPU   blender --background --python scripts/render-hero.py -- ...   # autodetect best GPU
+CYCLES_DEVICE=OPTIX blender --background --python scripts/render-hero.py -- ...   # pin a specific backend (CUDA | HIP | METAL | ONEAPI)
+```
+
+With no env var the probe order is OPTIX → CUDA → HIP → METAL → ONEAPI; first working device wins, otherwise CPU. Every render prints a single `[render-device]` line showing what was picked.
+
 ## Project Structure
 
 ```

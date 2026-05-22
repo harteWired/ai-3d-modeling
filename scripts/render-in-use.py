@@ -23,6 +23,9 @@ from math import radians
 import bpy
 import mathutils
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _render_device import configure_cycles_device  # noqa: E402
+
 PROJECT = "/workspace/projects/3d-printing"
 CRADLE_STL = os.path.join(PROJECT, "designs/ptouch-cradle/output/cradle.stl")
 
@@ -202,7 +205,7 @@ def configure_render(quality_key, out_path):
         scene.cycles.samples = q["samples"]
         scene.cycles.use_adaptive_sampling = True
         scene.cycles.adaptive_threshold = 0.005 if quality_key == "hero" else 0.01
-        scene.cycles.device = "CPU"
+        configure_cycles_device(scene)
         if q["denoiser"]:
             scene.cycles.use_denoising = True
             for cand in ("OPENIMAGEDENOISE", "OPTIX", "NLM"):
