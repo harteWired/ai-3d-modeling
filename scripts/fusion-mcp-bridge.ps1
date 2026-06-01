@@ -38,12 +38,18 @@ $FirewallRuleName = "Fusion MCP - Docker Container Bridge (port $Port)"
 # Only the 172.16-31.x range is used to avoid including LAN/VPN adapters.
 # Compute proper network addresses (mask host bits) so Windows Firewall accepts them.
 function Get-NetworkAddress([string]$ip, [int]$prefix) {
+    # Work in 64-bit to dodge PS 5.1's int32 overflow on uint32 shifts.
     $bytes = [System.Net.IPAddress]::Parse($ip).GetAddressBytes()
-    $mask = [uint32]([uint32]::MaxValue -shl (32 - $prefix))
-    $ipInt = ([uint32]$bytes[0] -shl 24) -bor ([uint32]$bytes[1] -shl 16) -bor ([uint32]$bytes[2] -shl 8) -bor [uint32]$bytes[3]
-    $netInt = $ipInt -band $mask
-    $net = [System.Net.IPAddress]::new([byte[]]@(($netInt -shr 24) -band 0xFF, ($netInt -shr 16) -band 0xFF, ($netInt -shr 8) -band 0xFF, $netInt -band 0xFF))
-    return "$net/$prefix"
+    [Array]::Reverse($bytes)                                  # -> little-endian for BitConverter
+    [uint64]$ipInt = [System.BitConverter]::ToUInt32($bytes, 0)
+    [uint64]$maskInt =
+        if ($prefix -le 0)      { 0 }
+        elseif ($prefix -ge 32) { 0xFFFFFFFFL }
+        else                    { (0xFFFFFFFFL -shl (32 - $prefix)) -band 0xFFFFFFFFL }
+    [uint32]$netInt = [uint32]($ipInt -band $maskInt)
+    $netBytes = [System.BitConverter]::GetBytes($netInt)
+    [Array]::Reverse($netBytes)                               # back to big-endian
+    return "$([System.Net.IPAddress]::new($netBytes).IPAddressToString)/$prefix"
 }
 
 $DockerAdapterIPs = @(
