@@ -58,6 +58,48 @@ The top-level conversation (you, reading this) is the **orchestrator**. You:
 - Make go/no-go decisions between stages
 - Never hold full SCAD source, review arithmetic, or validation output in your context — that's what the agents are for
 
+## Reference-photo intake — multi-source image registration
+
+When reference **photos** are part of a design's input, never extract a dimension from a
+single read. Use a triangulated, multi-method process — this is an orchestrator duty,
+before spec-writer.
+
+### Why (blind benchmark, 2026-05-31 — battery-capsule openings vs. user calipers)
+
+Five blind methods measured the capsule openings; scored against calipers
+(clear 27.8 × 23.6, teal 27.5 × 23.7 mm):
+
+| Method | Scale basis | MAE (mm) | Max err |
+|---|---|---|---|
+| gemini-flash | 1 cm mat grid | **2.5** | 4.7 |
+| gemini-pro | 1 cm mat grid | 5.65 | 5.8 |
+| claude-ruler | mm ruler ticks | 7.6 | 8.3 |
+| claude-grid | 1 cm grid + ruler | 7.78 | 9.2 |
+| claude-circles | circle templates | 8.03 | 9.0 |
+
+**Variance caveat — the ranking is unstable.** In an ad-hoc read minutes earlier the same
+methods flipped: Gemini Flash overshot to ~45 mm (worst) while Claude's grid read landed
+~28–32 mm (best) — same images, opposite winner. **Do not crown one method.** The durable
+signal: every photo read ran 2.5–8 mm off, and run-to-run spread can exceed the error itself.
+
+### Protocol
+
+1. Run **≥2 independent passes blind** — different model and/or scale basis; neither pass
+   sees the other's numbers or any caliper value. Reusable harness: the `Workflow` script
+   `image-registration-accuracy` (parallel measure agents → score → protocol).
+2. Anchor scale to the **1 cm grid squares** when present — the most consistent reference
+   (ruler-tick and circle-template bases fared no better).
+3. Triangulate to a per-dimension **median**; treat the inter-pass spread as the uncertainty
+   band and carry it into clearance sizing.
+4. **Constrain vision agents**: one read per image, no cropping/derivative files, no sub-tool
+   calls. Unconstrained agents ballooned to multi-MB transcripts chasing pixel precision.
+
+### Hard rule — fit-critical dimensions
+
+Any bore / pocket / rim the part must mate to **MUST be confirmed with user calipers before
+modeling.** Photos may only (a) seed the estimate and (b) size a test-coupon clearance range.
+Photo reads run 2.5–8 mm off — beyond any press/clearance tolerance.
+
 ## Inter-agent communication
 
 Agents communicate through files in `designs/<name>/`:
