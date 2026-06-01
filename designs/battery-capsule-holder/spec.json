@@ -1,0 +1,76 @@
+{
+  "name": "battery-capsule-holder",
+  "description": "6-pocket organic sculptural drawer holder for teardrop battery capsules — nested 180°-alternating teardrop sockets, smooth dune-hull outer body, sliding fit, non-slip base",
+
+  "dimensions": { "x": 89.0, "y": 68.0, "z": 20.0 },
+
+  "defaultTolerance": 0.2,
+  "tolerances": {
+    "pocketLongAxis": 0.1,
+    "pocketNarrowAxis": 0.1
+  },
+
+  "watertight": true,
+
+  "maxDimensions": { "x": 256, "y": 256, "z": 256 },
+
+  "volume": { "min": 20, "max": 70 },
+
+  "echoedDimensions": {
+    "envelope_footprint": { "x": 89.0, "y": 68.0, "z": 20.0 },
+    "pocket": { "x": 28.5, "y": 24.4, "z": 18.0 },
+    "cluster_centers_span": { "x": 52.8, "y": 27.5, "z": 0.0 }
+  },
+
+  "views": ["top", "iso", "front", "right"],
+
+  "params": {
+    "capsule_long_axis_mm":       "27.8",
+    "capsule_narrow_axis_mm":     "23.7",
+    "capsule_clearance_mm":       "0.35",
+    "pocket_depth_mm":            "18.0",
+    "lead_in_chamfer_mm":         "1.5",
+    "floor_thickness_mm":         "3.0",
+    "wall_nominal_mm":            "2.0",
+    "wall_min_mm":                "1.2",
+    "n_cols":                     "3",
+    "n_rows":                     "2",
+    "col_pitch_mm":               "26.4",
+    "row_pitch_nested_mm":        "27.5",
+    "base_outset_mm":             "6.0",
+    "top_outset_mm":              "2.5",
+    "base_edge_fillet_mm":        "1.5",
+    "foot_recess_dia_mm":         "10.0",
+    "foot_recess_depth_mm":       "1.0",
+    "tip_min_radius_mm":          "0.4",
+    "cluster_rotation_deg":       "0",
+    "draft_fn":                   "32",
+    "final_fn":                   "128"
+  },
+
+  "requiresId": false,
+  "requiresStrainAnalysis": false,
+
+  "modelingBackend": "openscad",
+
+  "testPrintCandidates": [
+    {
+      "feature": "teardrop pocket — sliding fit",
+      "reason": "Pocket long axis 28.5 mm and narrow axis 24.4 mm are fit-critical; 0.70 mm diametric clearance is within the range where first-layer squish and extrusion variation can tighten the pocket and prevent drop-in. A single-pocket test slug verifies fit before printing the full 6-pocket rack.",
+      "category": "fitment",
+      "priority": "high"
+    },
+    {
+      "feature": "top lead-in chamfer (1.5 mm × 45°)",
+      "reason": "Chamfer sits exactly at the 45° overhang threshold. A single-socket test piece confirms the chamfer prints cleanly without support and provides a smooth funnel edge rather than a rough drooping surface.",
+      "category": "printability",
+      "priority": "medium"
+    },
+    {
+      "feature": "inter-socket bridge at nested tip-to-arc interface",
+      "reason": "The thinnest wall between adjacent sockets in the nested 180° layout must be verified ≥ 1.2 mm. A 2-socket test piece (one 0° + one 180° at nested pitch) confirms the bridge is solid and not underextruded at the narrow point.",
+      "category": "fitment",
+      "priority": "high"
+    }
+  ]
+}
