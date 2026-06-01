@@ -10,3 +10,4 @@ assemblies/*/output/
 
 # Local-only PR drafts for upstream contributions
 pr-draft/
+designs/battery-capsule-holder/reference/

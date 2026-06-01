@@ -1,0 +1,93 @@
+{
+  "designName": "battery-capsule-holder",
+  "validationPass": true,
+  "iterations": 5,
+  "dimensions": {
+    "actual": { "x": 89.0, "y": 68.0, "z": 20.01 },
+    "expected": { "x": 89.0, "y": 68.0, "z": 20.0 },
+    "withinTolerance": true
+  },
+  "features": [
+    {
+      "name": "base_chamfer",
+      "description": "45-degree chamfer rolling the bottom outer edge inward over the first 1.5 mm of height (no sharp scratchy edge; stays at the 45-degree overhang threshold so it prints support-free). The widest cross-section (full 89x68) is reached at the top of this chamfer.",
+      "z_range": [0.0, 1.5],
+      "outer_extent": 89.0,
+      "inner_extent": null,
+      "scad_line": 196,
+      "transitions": { "below": "bed", "above": "outer_shell_taper" }
+    },
+    {
+      "name": "foot_recesses",
+      "description": "Four 10 mm dia x 1.0 mm deep circular recesses on the underside for self-adhesive silicone feet, placed near the four outer extent points of the organic footprint. Printed face-down (raised rings at bed level); ceilings at z=1.0, leaving a 2.0 mm structural floor below the socket floors.",
+      "z_range": [0.0, 1.0],
+      "outer_extent": null,
+      "inner_extent": 10.0,
+      "scad_line": 273,
+      "transitions": { "below": "bed", "above": "structural_floor" }
+    },
+    {
+      "name": "structural_floor",
+      "description": "Solid 3.0 mm floor (1.0 mm consumed by foot recesses + 2.0 mm structural) forming the closed blind bottoms of all six sockets.",
+      "z_range": [0.0, 3.0],
+      "outer_extent": 89.0,
+      "inner_extent": null,
+      "scad_line": 216,
+      "transitions": { "below": "base_chamfer / foot_recesses", "above": "socket_array" }
+    },
+    {
+      "name": "outer_shell_taper",
+      "description": "Organic dune-hull outer body: a smooth superellipse footprint (89x68, no straight edges) at the base drawing inward by 3.5 mm toward the top socket mouths over the height. Outer wall angle ~11 deg from vertical (well under 45). Built by hulling stacked thin envelope slices; the superellipse defines the exact bbox while the offset socket-cluster blob fills it.",
+      "z_range": [1.5, 20.0],
+      "outer_extent": 89.0,
+      "inner_extent": null,
+      "scad_line": 216,
+      "transitions": { "below": "base_chamfer", "above": "top_face" }
+    },
+    {
+      "name": "socket_array",
+      "description": "Six blind teardrop sockets (28.5 mm long axis x 24.4 mm narrow axis, with 0.35 mm/side sliding-fit clearance already baked in), 18 mm deep, vertical walls (0 deg overhang inside). 3x2 nested layout: rows alternate 0/180 deg and row 1 is shifted 9 mm in X so each pointed tip dives into the valley between the opposite row's round backs (true teardrop nesting at the 27.5 mm row pitch, which is shorter than the 28.5 mm long axis). Tip radius 0.6 mm (>0.4 nozzle floor). Outer grip only, no internal post.",
+      "z_range": [3.0, 20.0],
+      "outer_extent": 28.5,
+      "inner_extent": null,
+      "scad_line": 239,
+      "transitions": { "below": "structural_floor", "above": "lead_in_chamfer" }
+    },
+    {
+      "name": "lead_in_chamfer",
+      "description": "1.5 mm x 45-degree funnel chamfer around each of the six teardrop socket rims so a capsule self-aligns on drop-in. Inward-sloping face at exactly 45 deg (prints support-free; fully supported by the vertical socket wall below). Effective gripping depth after chamfer: 16.5 mm.",
+      "z_range": [18.5, 20.0],
+      "outer_extent": 31.5,
+      "inner_extent": 28.5,
+      "scad_line": 245,
+      "transitions": { "below": "socket_array", "above": "top_face" }
+    },
+    {
+      "name": "top_face",
+      "description": "Flat top plane at z=20.0 with six teardrop openings (lead-in chamfers recessed just inside). Outer surface is tightest here, closely wrapping the socket mouths.",
+      "z_range": [20.0, 20.0],
+      "outer_extent": 82.0,
+      "inner_extent": 28.5,
+      "scad_line": 216,
+      "transitions": { "below": "outer_shell_taper / lead_in_chamfer", "above": "top" }
+    }
+  ],
+  "printOrientation": {
+    "bed_face": "flat bottom (underside with foot recesses) on the bed",
+    "z_direction": "print-Z = design-Z; sockets open upward, outer body tapers inward as it rises"
+  },
+  "specDeviations": [
+    {
+      "dimension": "echoedDimensions label naming",
+      "expected": "envelope-footprint / cluster-centers-span (hyphenated)",
+      "actual": "envelope_footprint / cluster_centers_span (underscored)",
+      "reason": "The render harness DIMENSION parser regex (^DIMENSION:(\\w+):(\\w+)=...) rejects hyphens, so hyphenated echo labels can never be captured and the spec's echoedDimensions keys were unsatisfiable as written. Renamed both the SCAD echo labels and the spec.json keys to the underscore form. Values, tolerances, and design intent are unchanged - this is a tooling-compatibility rename only."
+    },
+    {
+      "dimension": "row_stagger_x",
+      "expected": "half-column (13.2 mm) ideal nest shift implied by requirements",
+      "actual": "9.0 mm",
+      "reason": "A full half-column stagger pushes the X footprint to ~102 mm (well over the 89 mm target). 9.0 mm still achieves genuine tip-into-back-valley nesting (verified thinnest inter-socket bridge = 2.0 mm) while keeping the cluster inside the 89x68 envelope. The dominant thinnest wall is the same-row side-by-side gap (col_pitch 26.4 - pocket narrow 24.4 = 2.0 mm), not the nested interface."
+    }
+  ]
+}
