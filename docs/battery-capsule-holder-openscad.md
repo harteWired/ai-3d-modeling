@@ -1,8 +1,8 @@
-# Battery Capsule Holder
+# Battery Capsule Holder (OpenSCAD)
 
 An organic drawer rack that holds **6 battery capsules** upright, lab-beaker-rack style. Each capsule is an asymmetric teardrop tube (a clear half + a teal half that attach to close, batteries inside); the rack cradles the lower body in a blind socket so the capsules stand vertical, drop in and out one-handed, and pack densely by nesting alternate teardrops nose-to-tail.
 
-> **Backend:** OpenSCAD (v1, this page). A **[clean-room Fusion alternate](battery-capsule-holder-fusion.md)** — a filleted-slab redesign built independently from this one (the agent never saw this solution) — is also available for side-by-side comparison.
+> **Sibling design:** there is a separate [Battery Capsule Holder (Fusion)](battery-capsule-holder-fusion.md) for the same brief — a filleted-slab redesign built clean-room (the agent never saw this OpenSCAD solution). The two are meant to be compared side-by-side. Built here on the **OpenSCAD** backend.
 
 ## Renders
 

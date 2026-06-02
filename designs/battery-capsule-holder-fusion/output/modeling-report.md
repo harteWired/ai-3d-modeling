@@ -65,8 +65,9 @@ slab) and *material efficiency* (the dune-hull tapers away ~22 cm³ the slab kee
 **converged independently** on the fit-critical numbers — 0.35 mm clearance and 2.0 mm
 min wall — a good signal both reads of the FDM constraints were sound.
 
-## Files
+## Files (in this design folder)
 
-- `battery-capsule-holder-fusion.stl` — print-ready mesh (6,348 tris, watertight)
+- `output/battery-capsule-holder-fusion.stl` — print-ready mesh (6,348 tris, watertight)
 - `build.py` — the clean-room Fusion `execute_code` build script (reproducible)
+- `MEASUREMENTS.md` — calipered ground truth (shared with the OpenSCAD build)
 - proofs published at `docs/images/battery-capsule-holder/battery-capsule-holder-fusion-{hero,top,front}.png`

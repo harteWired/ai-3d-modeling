@@ -1,8 +1,8 @@
-# Battery Capsule Holder — Fusion Alternate
+# Battery Capsule Holder (Fusion)
 
-An **alternate design** for the same brief as the [OpenSCAD Battery Capsule Holder](battery-capsule-holder.md): a drawer rack that holds **6 battery capsules** upright, beaker-rack style, gripping the lower body of each asymmetric teardrop capsule in a blind socket so they stand vertical and drop in either end up.
+A drawer rack that holds **6 battery capsules** upright, beaker-rack style, gripping the lower body of each asymmetric teardrop capsule in a blind socket so they stand vertical and drop in either end up. Built on the **Fusion 360** backend.
 
-> **Backend:** Fusion 360 (MCP). This build is a **clean-room independent redesign** — the agent that made every geometry decision was deliberately walled off from the OpenSCAD solution (it never saw the `.scad`, `spec.json`, or v1 renders) and worked only from the problem statement: calipered capsule dims, capacity, fit type, and drawer context. The two designs are meant to be compared side-by-side.
+> **Sibling design:** there is a separate [Battery Capsule Holder (OpenSCAD)](battery-capsule-holder-openscad.md) for the same brief. This Fusion build is a **clean-room independent design** — the agent that made every geometry decision was deliberately walled off from the OpenSCAD solution (it never saw the `.scad`, `spec.json`, or those renders) and worked only from the problem statement: calipered capsule dims, capacity, fit type, and drawer context. The two are meant to be compared side-by-side.
 
 ## Renders
 
@@ -59,7 +59,7 @@ bottom fillet) for a clean first layer.
 
 ## vs the OpenSCAD build
 
-| | [OpenSCAD v1](battery-capsule-holder.md) | Fusion (this page) |
+| | [OpenSCAD](battery-capsule-holder-openscad.md) | Fusion (this page) |
 |---|---|---|
 | Outer body | superellipse n = 2.6 dune-hull, tapers inward | rounded-rect slab, 3 mm edge fillets |
 | Footprint | 89 × 68 mm | 80.4 × 73.9 mm |
@@ -79,8 +79,9 @@ tapers away ~22 cm³ that the slab keeps.
 
 | File | Description |
 |------|-------------|
-| [`battery-capsule-holder-fusion.stl`](../designs/battery-capsule-holder/output/fusion/battery-capsule-holder-fusion.stl) | Print-ready mesh (watertight) |
-| [`modeling-report.md`](../designs/battery-capsule-holder/output/fusion/modeling-report.md) | Clean-room rationale + validation |
-| [`MEASUREMENTS.md`](../designs/battery-capsule-holder/MEASUREMENTS.md) | Caliper data (shared with v1) |
+| [`battery-capsule-holder-fusion.stl`](../designs/battery-capsule-holder-fusion/output/battery-capsule-holder-fusion.stl) | Print-ready mesh (watertight) |
+| [`build.py`](../designs/battery-capsule-holder-fusion/build.py) | Reproducible Fusion build script |
+| [`modeling-report.md`](../designs/battery-capsule-holder-fusion/output/modeling-report.md) | Clean-room rationale + validation |
+| [`MEASUREMENTS.md`](../designs/battery-capsule-holder-fusion/MEASUREMENTS.md) | Caliper data (shared with the OpenSCAD build) |
 
 Built with the Fusion 360 MCP backend (clean-room dispatch).
