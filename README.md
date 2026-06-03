@@ -8,6 +8,8 @@ This is an AI-native parametric modeling pipeline built on [Claude Code](https:/
 
 **Printer:** Bambu Lab X1 Carbon — 256 × 256 × 256 mm, 0.4 mm nozzle, PLA.
 
+**New here?** The [Getting Started guide](docs/GETTING-STARTED.md) takes you from a fresh clone to your first shipped part.
+
 ## What It Does
 
 - **Dual modeling backends** — OpenSCAD (headless, git-native, default) for functional and rectilinear geometry; Autodesk Fusion 360 via MCP for organic shapes, compound curves, and freeform surfaces. Both backends produce the same STL + report outputs; everything downstream is backend-agnostic. See [`docs/fusion-mcp-setup.md`](docs/fusion-mcp-setup.md).
