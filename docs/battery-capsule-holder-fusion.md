@@ -2,7 +2,7 @@
 
 A drawer rack that holds **6 battery capsules** upright, beaker-rack style, gripping the lower body of each asymmetric teardrop capsule in a blind socket so they stand vertical and drop in either end up. Built on the **Fusion 360** backend.
 
-> **One-shot model test:** this v1 was generated in a single modeling pass with no design iteration — a test of how good a first-shot the pipeline produces. (A refined **v2** is in progress.)
+> **One-shot model test:** this was generated in a single modeling pass with no design iteration — a test of how good a first-shot the pipeline produces. A refined, characterful evolution became its own model: the [Caterpillar Capsule Holder](caterpillar-capsule-holder.md).
 
 > **Sibling design:** there is a separate [Battery Capsule Holder (OpenSCAD)](battery-capsule-holder-openscad.md) for the same brief. This Fusion build is a **clean-room independent design** — the agent that made every geometry decision was deliberately walled off from the OpenSCAD solution (it never saw the `.scad`, `spec.json`, or those renders) and worked only from the problem statement: calipered capsule dims, capacity, fit type, and drawer context. The two are meant to be compared side-by-side.
 
