@@ -68,6 +68,7 @@ def parse_args():
     p.add_argument("--rgb", default=None, help="Linear r,g,b override (e.g. '0.26,0.205,0.13')")
     p.add_argument("--transparent", action="store_true", help="Render with a transparent background (film_transparent)")
     p.add_argument("--spin", type=int, default=0, help="Render N turntable frames (subject rotated about Z) into --out as a directory")
+    p.add_argument("--samples", type=int, default=None, help="Override Cycles sample count (lower = faster, for turntables)")
     return p.parse_args(argv)
 
 
@@ -192,7 +193,7 @@ def setup_camera(angle, subject_z_norm):
     bpy.context.scene.camera = cam
 
 
-def configure_render(quality_key, out_path, transparent=False):
+def configure_render(quality_key, out_path, transparent=False, samples=None):
     q = QUALITY_PRESETS[quality_key]
     scene = bpy.context.scene
     scene.render.resolution_x, scene.render.resolution_y = q["res"]
@@ -211,7 +212,7 @@ def configure_render(quality_key, out_path, transparent=False):
         scene.render.engine = engine
 
     if scene.render.engine == "CYCLES":
-        scene.cycles.samples = q["samples"]
+        scene.cycles.samples = samples if samples else q["samples"]
         scene.cycles.use_adaptive_sampling = True
         scene.cycles.adaptive_threshold = 0.005 if quality_key == "hero" else 0.01
         configure_cycles_device(scene)
@@ -286,11 +287,11 @@ def main():
             subject.rotation_euler = (0.0, 0.0, 2.0 * math.pi * i / args.spin)
             bpy.context.view_layer.update()
             frame_path = os.path.join(args.out, f"frame{i:03d}.png")
-            configure_render(args.quality, frame_path, transparent=args.transparent)
+            configure_render(args.quality, frame_path, transparent=args.transparent, samples=args.samples)
             bpy.ops.render.render(write_still=True)
             print(f"[part-render] spin frame {i + 1}/{args.spin} -> {frame_path}")
     else:
-        configure_render(args.quality, args.out, transparent=args.transparent)
+        configure_render(args.quality, args.out, transparent=args.transparent, samples=args.samples)
         bpy.ops.render.render(write_still=True)
         print(f"[part-render] PNG -> {args.out}")
 
