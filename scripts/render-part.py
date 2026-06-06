@@ -69,6 +69,7 @@ def parse_args():
     p.add_argument("--transparent", action="store_true", help="Render with a transparent background (film_transparent)")
     p.add_argument("--spin", type=int, default=0, help="Render N turntable frames (subject rotated about Z) into --out as a directory")
     p.add_argument("--samples", type=int, default=None, help="Override Cycles sample count (lower = faster, for turntables)")
+    p.add_argument("--subsurf", type=int, default=0, help="Add a Subdivision Surface modifier at this level to smooth faceted/low-poly meshes")
     return p.parse_args(argv)
 
 
@@ -251,6 +252,11 @@ def main():
     subject = import_stl(args.stl, "Subject")
     pla = make_pla_material("PartPLA", rgb)
     assign(subject, pla)
+
+    if args.subsurf and args.subsurf > 0:
+        mod = subject.modifiers.new("Subsurf", "SUBSURF")
+        mod.levels = args.subsurf
+        mod.render_levels = args.subsurf
 
     bpy.context.view_layer.update()
     ws_corners = [subject.matrix_world @ mathutils.Vector(v) for v in subject.bound_box]
