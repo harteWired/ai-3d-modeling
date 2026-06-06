@@ -67,6 +67,7 @@ def parse_args():
     p.add_argument("--quality", default="standard", choices=list(QUALITY_PRESETS))
     p.add_argument("--rgb", default=None, help="Linear r,g,b override (e.g. '0.26,0.205,0.13')")
     p.add_argument("--transparent", action="store_true", help="Render with a transparent background (film_transparent)")
+    p.add_argument("--spin", type=int, default=0, help="Render N turntable frames (subject rotated about Z) into --out as a directory")
     return p.parse_args(argv)
 
 
@@ -276,9 +277,22 @@ def main():
     setup_lights()
     setup_camera(args.angle, subject_z_norm)
 
-    configure_render(args.quality, args.out, transparent=args.transparent)
-    bpy.ops.render.render(write_still=True)
-    print(f"[part-render] PNG -> {args.out}")
+    if args.spin and args.spin > 1:
+        import math
+        os.makedirs(args.out, exist_ok=True)
+        # zoom out a touch so a long part stays in frame through the full rotation
+        subject.scale = tuple(c * 0.80 for c in subject.scale)
+        for i in range(args.spin):
+            subject.rotation_euler = (0.0, 0.0, 2.0 * math.pi * i / args.spin)
+            bpy.context.view_layer.update()
+            frame_path = os.path.join(args.out, f"frame{i:03d}.png")
+            configure_render(args.quality, frame_path, transparent=args.transparent)
+            bpy.ops.render.render(write_still=True)
+            print(f"[part-render] spin frame {i + 1}/{args.spin} -> {frame_path}")
+    else:
+        configure_render(args.quality, args.out, transparent=args.transparent)
+        bpy.ops.render.render(write_still=True)
+        print(f"[part-render] PNG -> {args.out}")
 
 
 if __name__ == "__main__":
