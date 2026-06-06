@@ -66,6 +66,7 @@ def parse_args():
     p.add_argument("--angle", default="front-threequarter", choices=list(ANGLE_PRESETS))
     p.add_argument("--quality", default="standard", choices=list(QUALITY_PRESETS))
     p.add_argument("--rgb", default=None, help="Linear r,g,b override (e.g. '0.26,0.205,0.13')")
+    p.add_argument("--transparent", action="store_true", help="Render with a transparent background (film_transparent)")
     return p.parse_args(argv)
 
 
@@ -190,14 +191,14 @@ def setup_camera(angle, subject_z_norm):
     bpy.context.scene.camera = cam
 
 
-def configure_render(quality_key, out_path):
+def configure_render(quality_key, out_path, transparent=False):
     q = QUALITY_PRESETS[quality_key]
     scene = bpy.context.scene
     scene.render.resolution_x, scene.render.resolution_y = q["res"]
     scene.render.resolution_percentage = 100
     scene.render.image_settings.file_format = "PNG"
     scene.render.image_settings.color_mode = "RGBA"
-    scene.render.film_transparent = False
+    scene.render.film_transparent = transparent
 
     engine = q["engine"]
     if engine == "BLENDER_EEVEE_NEXT":
@@ -270,11 +271,12 @@ def main():
     subject_z_norm = size.z * norm
 
     setup_world()
-    setup_backdrop()
+    if not args.transparent:
+        setup_backdrop()
     setup_lights()
     setup_camera(args.angle, subject_z_norm)
 
-    configure_render(args.quality, args.out)
+    configure_render(args.quality, args.out, transparent=args.transparent)
     bpy.ops.render.render(write_still=True)
     print(f"[part-render] PNG -> {args.out}")
 
