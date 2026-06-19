@@ -45,6 +45,7 @@ ANGLE_PRESETS = {
     "top-threequarter":   ((0.8, 1.1, 1.15), 0.30),
     "front":              ((0.0, 1.3, 0.15), 0.30),
     "iso":                ((1.2, 1.2, 1.1),  0.45),
+    "top":                ((0.02, 0.02, 1.9), 0.0),
 }
 
 QUALITY_PRESETS = {
@@ -70,6 +71,8 @@ def parse_args():
     p.add_argument("--spin", type=int, default=0, help="Render N turntable frames (subject rotated about Z) into --out as a directory")
     p.add_argument("--samples", type=int, default=None, help="Override Cycles sample count (lower = faster, for turntables)")
     p.add_argument("--subsurf", type=int, default=0, help="Add a Subdivision Surface modifier at this level to smooth faceted/low-poly meshes")
+    p.add_argument("--overlay-stl", default=None, help="Second STL rendered in the same scene in a contrasting color (e.g. two-color print preview)")
+    p.add_argument("--overlay-rgb", default="0.02,0.16,0.22", help="Linear r,g,b for the overlay STL (default deep teal)")
     return p.parse_args(argv)
 
 
@@ -272,6 +275,13 @@ def main():
     subject.select_set(True)
     bpy.context.view_layer.objects.active = subject
     bpy.ops.object.origin_set(type="ORIGIN_GEOMETRY", center="BOUNDS")
+    if args.overlay_stl:
+        ov = import_stl(args.overlay_stl, "Overlay")
+        orgb = tuple(float(x) for x in args.overlay_rgb.split(","))
+        assign(ov, make_pla_material("OverlayPLA", orgb, roughness=0.5))
+        ov.parent = subject
+        ov.matrix_parent_inverse = subject.matrix_world.inverted()
+        bpy.context.view_layer.objects.active = subject
     norm = 1.0 / max_dim
     subject.scale = (norm, norm, norm)
     subject.location = (0.0, 0.0, (size.z * 0.5) * norm)
