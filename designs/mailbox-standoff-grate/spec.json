@@ -1,0 +1,98 @@
+{
+  "name": "mailbox-standoff-grate",
+  "version": "v1",
+  "description": "Raised drainage grate for a leaky mailbox interior. Floats mail ~15 mm above the pooled water on legs that reach the true floor inboard of the caulked corners. Prints as four interlocking dovetail-jigsaw quadrants (2x2) so each piece passes the smaller door and fits the 256 mm bed. Continuous 45-degree cross-hatch drainage mesh (~46% open) with one mostly-solid two-color letter per quadrant (M/H/H/K), each with small drain holes. Modeled in Fusion (dovetail tiles) + container-side shapely/trimesh (mesh field, letters, two-color split).",
+  "dimensions": {
+    "x": 237.6,
+    "y": 339.2,
+    "z": 19
+  },
+  "defaultTolerance": 0.2,
+  "tolerances": {
+    "jigsaw_interlock": 0.2,
+    "note": "0.2 mm/side assembly clearance on the central jigsaw interlock (clearance fit so the four quadrants slot together by hand). Wall clearance to mailbox interior is 5 mm/side — generous, gravity-located, not a fit surface."
+  },
+  "watertight": false,
+  "watertight_note": "Open grate by design — drainage is the point. Each individual quadrant should be a clean manifold solid; the assembly is four separate bodies that interlock.",
+  "maxDimensions": { "x": 256, "y": 256, "z": 256 },
+  "requiresStrainAnalysis": false,
+  "strain_note": "Light load (letters/small parcels). No load case. Stiffness handled by rib depth + leg count, verified visually at review.",
+  "material": "PLA",
+  "material_note": "PLA for v1. A metal mailbox in summer sun can exceed PLA's ~60 C softening point; reprint in PETG or ASA if v1 sags. Geometry kept material-agnostic.",
+  "interior": {
+    "width_x": 247.65,
+    "depth_y": 349.25,
+    "front_lip_depth": 25.4,
+    "front_lip_underside_off_floor": 6.35,
+    "front_lip_note": "Lip is ~1 in deep into the cavity from the front wall, underside ~1/4 in off the floor. Deck floats above it; front legs sit behind it.",
+    "caulked_corners": true,
+    "door_opening_note": "About 1 in smaller all around than the interior; large door. No exact number from user; 2x2 split makes it non-blocking."
+  },
+  "params": {
+    "wall_clearance_per_side": 5.0,
+    "deck_width_x": 237.6,
+    "deck_depth_y": 339.2,
+    "float_height": 15.0,
+    "float_height_note": "Deck underside to floor. Within user's 1/2-3/4 in band; clears caulk fillets, thin water film, and the front lip.",
+    "grate_deck_thickness_z": 4.0,
+    "field_pattern": "continuous 45-degree cross-hatch mesh",
+    "mesh_rib_width": 1.8,
+    "mesh_cell": 15.0,
+    "mesh_open_area_pct": 46,
+    "letter_style": "mostly-solid two-color glyph (Arial Black) with small drain holes",
+    "letter_drain_hole_dia": 3.2,
+    "two_color": true,
+    "perimeter_frame_width": 3.0,
+    "target_open_area_pct": "40-50",
+    "quadrant_count": 4,
+    "quadrant_width_x": 118.8,
+    "quadrant_depth_y": 169.6,
+    "split": "2x2",
+    "letters": {
+      "back_left": "M",
+      "back_right": "H",
+      "front_left": "H",
+      "front_right": "K",
+      "note": "Plan view, 'top'/'back' = far from door. One mostly-solid two-color letter per quadrant, set in the cross-hatch mesh."
+    },
+    "interlock_type": "jigsaw/dovetail along central cross seam",
+    "interlock_clearance_per_side": 0.2,
+    "center_junction": "reinforce the 4-way meeting point (staggered seam or keyed central boss) so the middle does not splay/hinge",
+    "legs": {
+      "height": 15.0,
+      "min_inset_side_back_walls": 20.0,
+      "min_setback_front_wall": 30.0,
+      "setback_reason": "land on flat floor behind the 1-in front lip; clear the corner caulk fillets",
+      "section_estimate": "~10 mm, ~3-4 per quadrant",
+      "location": "gravity-located, no wall fit"
+    },
+    "min_wall": 1.2,
+    "retention": "gravity_only"
+  },
+  "views": ["top", "front", "iso"],
+  "requiresId": false,
+  "requiresId_note": "User is speccing the look directly. The grate has a visible 'face' (vortex + letters) — escalate to id-designer if letters read muddy on the first render.",
+  "modelingBackend": "fusion",
+  "modeling_note": "modeler-fusion subagent runs BLIND and fabricates 'validated live' claims — use it as a script-author only; run every revision live from the main session (see feedback_fusion_subagent_blind_validation).",
+  "heroRender": {
+    "enabled": true,
+    "quality": "hero",
+    "angles": ["top", "iso-threequarter"],
+    "exportGlb": false,
+    "note": "Top-down shows the vortex pattern + M/H/H/K letters — the distinctive face of the part."
+  },
+  "testPrintCandidates": [
+    {
+      "feature": "Central jigsaw interlock",
+      "reason": "0.2 mm/side puzzle clearance — print a short mating pair from two adjacent quadrants to confirm the interlock slots together snugly before committing to all four full pieces.",
+      "category": "fitment",
+      "priority": "high"
+    },
+    {
+      "feature": "Quadrant corner with legs + vortex ribs",
+      "reason": "Verify leg height/stability, rib width, and that the letter reads in the swirl on a single printed corner before full pieces.",
+      "category": "printability",
+      "priority": "medium"
+    }
+  ]
+}

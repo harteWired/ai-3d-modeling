@@ -45,6 +45,7 @@ ANGLE_PRESETS = {
     "top-threequarter":   ((0.8, 1.1, 1.15), 0.30),
     "front":              ((0.0, 1.3, 0.15), 0.30),
     "iso":                ((1.2, 1.2, 1.1),  0.45),
+    "top":                ((0.02, 0.02, 1.9), 0.0),
 }
 
 QUALITY_PRESETS = {
@@ -66,6 +67,12 @@ def parse_args():
     p.add_argument("--angle", default="front-threequarter", choices=list(ANGLE_PRESETS))
     p.add_argument("--quality", default="standard", choices=list(QUALITY_PRESETS))
     p.add_argument("--rgb", default=None, help="Linear r,g,b override (e.g. '0.26,0.205,0.13')")
+    p.add_argument("--transparent", action="store_true", help="Render with a transparent background (film_transparent)")
+    p.add_argument("--spin", type=int, default=0, help="Render N turntable frames (subject rotated about Z) into --out as a directory")
+    p.add_argument("--samples", type=int, default=None, help="Override Cycles sample count (lower = faster, for turntables)")
+    p.add_argument("--subsurf", type=int, default=0, help="Add a Subdivision Surface modifier at this level to smooth faceted/low-poly meshes")
+    p.add_argument("--overlay-stl", default=None, help="Second STL rendered in the same scene in a contrasting color (e.g. two-color print preview)")
+    p.add_argument("--overlay-rgb", default="0.02,0.16,0.22", help="Linear r,g,b for the overlay STL (default deep teal)")
     return p.parse_args(argv)
 
 
@@ -190,14 +197,14 @@ def setup_camera(angle, subject_z_norm):
     bpy.context.scene.camera = cam
 
 
-def configure_render(quality_key, out_path):
+def configure_render(quality_key, out_path, transparent=False, samples=None):
     q = QUALITY_PRESETS[quality_key]
     scene = bpy.context.scene
     scene.render.resolution_x, scene.render.resolution_y = q["res"]
     scene.render.resolution_percentage = 100
     scene.render.image_settings.file_format = "PNG"
     scene.render.image_settings.color_mode = "RGBA"
-    scene.render.film_transparent = False
+    scene.render.film_transparent = transparent
 
     engine = q["engine"]
     if engine == "BLENDER_EEVEE_NEXT":
@@ -209,7 +216,7 @@ def configure_render(quality_key, out_path):
         scene.render.engine = engine
 
     if scene.render.engine == "CYCLES":
-        scene.cycles.samples = q["samples"]
+        scene.cycles.samples = samples if samples else q["samples"]
         scene.cycles.use_adaptive_sampling = True
         scene.cycles.adaptive_threshold = 0.005 if quality_key == "hero" else 0.01
         configure_cycles_device(scene)
@@ -249,6 +256,11 @@ def main():
     pla = make_pla_material("PartPLA", rgb)
     assign(subject, pla)
 
+    if args.subsurf and args.subsurf > 0:
+        mod = subject.modifiers.new("Subsurf", "SUBSURF")
+        mod.levels = args.subsurf
+        mod.render_levels = args.subsurf
+
     bpy.context.view_layer.update()
     ws_corners = [subject.matrix_world @ mathutils.Vector(v) for v in subject.bound_box]
     minc = mathutils.Vector((min(c.x for c in ws_corners), min(c.y for c in ws_corners), min(c.z for c in ws_corners)))
@@ -263,6 +275,13 @@ def main():
     subject.select_set(True)
     bpy.context.view_layer.objects.active = subject
     bpy.ops.object.origin_set(type="ORIGIN_GEOMETRY", center="BOUNDS")
+    if args.overlay_stl:
+        ov = import_stl(args.overlay_stl, "Overlay")
+        orgb = tuple(float(x) for x in args.overlay_rgb.split(","))
+        assign(ov, make_pla_material("OverlayPLA", orgb, roughness=0.5))
+        ov.parent = subject
+        ov.matrix_parent_inverse = subject.matrix_world.inverted()
+        bpy.context.view_layer.objects.active = subject
     norm = 1.0 / max_dim
     subject.scale = (norm, norm, norm)
     subject.location = (0.0, 0.0, (size.z * 0.5) * norm)
@@ -270,13 +289,27 @@ def main():
     subject_z_norm = size.z * norm
 
     setup_world()
-    setup_backdrop()
+    if not args.transparent:
+        setup_backdrop()
     setup_lights()
     setup_camera(args.angle, subject_z_norm)
 
-    configure_render(args.quality, args.out)
-    bpy.ops.render.render(write_still=True)
-    print(f"[part-render] PNG -> {args.out}")
+    if args.spin and args.spin > 1:
+        import math
+        os.makedirs(args.out, exist_ok=True)
+        # zoom out a touch so a long part stays in frame through the full rotation
+        subject.scale = tuple(c * 0.80 for c in subject.scale)
+        for i in range(args.spin):
+            subject.rotation_euler = (0.0, 0.0, 2.0 * math.pi * i / args.spin)
+            bpy.context.view_layer.update()
+            frame_path = os.path.join(args.out, f"frame{i:03d}.png")
+            configure_render(args.quality, frame_path, transparent=args.transparent, samples=args.samples)
+            bpy.ops.render.render(write_still=True)
+            print(f"[part-render] spin frame {i + 1}/{args.spin} -> {frame_path}")
+    else:
+        configure_render(args.quality, args.out, transparent=args.transparent, samples=args.samples)
+        bpy.ops.render.render(write_still=True)
+        print(f"[part-render] PNG -> {args.out}")
 
 
 if __name__ == "__main__":
