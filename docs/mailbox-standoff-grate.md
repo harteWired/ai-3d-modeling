@@ -83,6 +83,13 @@ each object. The colored cap is **only the top 1 mm (~5 layers)** of the letter,
 first against the bed, so it's a **single filament change** with no wasted second-color
 volume. For a single-filament print, use the `tileperf-<id>.stl` reference mesh instead.
 
+The slicer will **flag the two objects as touching/overlapping** — that's expected and
+benign: the base and cap are complementary solids that meet at the `z=3` layer boundary
+(the contact is ~10 µm of float noise, not real interpenetration). To silence the warning,
+select both objects → right-click → **Assemble** into one object, then assign a filament
+per part. Assign the **cap** (first layers off the bed) your letter color and the **base**
+the tan — if the letter prints tan, the assignment is swapped.
+
 ## Validation
 
 ```
