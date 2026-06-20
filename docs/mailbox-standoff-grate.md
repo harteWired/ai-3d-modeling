@@ -112,6 +112,22 @@ total material:  228.4 cm³ ≈ 283 g PLA              PASS
 | Filaments | 2 (base + letter) per `-bicolor.3mf`, or 1 for the reference STL |
 | Recommended | Brim on the outer frame for bed adhesion |
 
+## Test print — dovetail fit check
+
+Before committing to all four ~70 g tiles, validate the **0.2 mm dovetail clearance** in real
+PLA with a single ~8 g strip. `test-dovetail-strip-K-mates-H2.stl` is a faithful slice of the
+K tile's seam edge — it drops onto the **H2** tile's interior vertical seam and exercises both
+sides of the joint (H2's teeth into the strip's notches and vice-versa).
+
+![Top view of the H2 tile with the thin K seam strip slotted onto its right-hand interior edge, the dovetail teeth interlocking down the seam](images/mailbox-standoff-grate/mailbox-standoff-grate-dovetail-test.png)
+*The K seam strip dropped onto H2's vertical seam — what the fit test looks like assembled*
+
+The teeth are re-entrant (they lock in-plane), so **drop the strip straight down** onto the
+edge — don't slide it in. Looking for: seats with a light push (not forced), sits flush, and
+doesn't lift or rattle. Snug → print all four. Too tight/loose → adjust the clearance in
+`build_assembly.py` and reprint just the strip. The geometry is identical on every seam, so one
+strip validates the whole set.
+
 ## Downloads
 
 | File | Description |
@@ -121,6 +137,7 @@ total material:  228.4 cm³ ≈ 283 g PLA              PASS
 | [`H2-bicolor.3mf`](../designs/mailbox-standoff-grate/output/print2c/H2-bicolor.3mf) | Front-left quadrant, two-color |
 | [`K-bicolor.3mf`](../designs/mailbox-standoff-grate/output/print2c/K-bicolor.3mf) | Front-right quadrant, two-color |
 | [`assembly-perf.stl`](../designs/mailbox-standoff-grate/output/assembly-perf.stl) | Full assembled grate (preview/reference) |
+| [`test-dovetail-strip-K-mates-H2.stl`](../designs/mailbox-standoff-grate/output/test-dovetail-strip-K-mates-H2.stl) | ~8 g dovetail fit-test strip (mates the H2 tile) |
 | [`build_perf_tiles.py`](../designs/mailbox-standoff-grate/build_perf_tiles.py) | Reproducible mesh + letter + two-color generator |
 | [`bundle_bicolor.py`](../designs/mailbox-standoff-grate/bundle_bicolor.py) | Print-orients + bundles each tile's 3MF |
 | [`build_assembly.py`](../designs/mailbox-standoff-grate/build_assembly.py) | Fusion dovetail-tile builder (footprint source) |
