@@ -43,8 +43,11 @@ reinforce the 4-way center junction.
    └─────────┴─────────┘
 ```
 
-Each tile prints **deck-down, legs up** — the mesh and letter are flat on the bed (no
-bridging, no supports); the legs print as short vertical posts.
+Each tile prints **letter-face-down** — the mesh + letter sit flat on the bed (the letter
+becomes the smooth show face; flip the tile to use it). The **legs run the full height,
+through the deck and flush with the show face**, so their ends land on the bed coplanar
+with the deck and the legs rise as supported towers. Nothing is elevated → **no bridging,
+no supports**.
 
 ## Geometry
 
@@ -55,17 +58,17 @@ bridging, no supports); the legs print as short vertical posts.
 | Deck thickness | 4.0 mm | flat mesh plate |
 | Float height (legs) | 15.0 mm | deck underside to floor; clears caulk fillets + front lip |
 | Field pattern | 45° cross-hatch mesh | 1.8 mm ribs, ~46 % open |
-| Letters | Arial Black, two-color | mostly solid + Ø3.2 mm drain holes |
+| Letters | Arial Black, two-color | mostly solid + Ø3.2 mm drain holes; color only the top 1 mm |
 | Jigsaw clearance | 0.2 mm/side | re-entrant dovetail teeth |
-| Legs | 4 per tile, ~12 mm sq | ≥20 mm off side/back walls, front legs ≥30 mm behind the lip |
-| Total volume | 222.7 cm³ | ≈ 276 g PLA across all four tiles |
+| Legs | 4 per tile, ~12 mm sq | full-height through the deck, flush with the show face; ≥20 mm off side/back walls, front legs ≥30 mm behind the lip |
+| Total volume | 228.4 cm³ | ≈ 283 g PLA across all four tiles |
 
 ## Printability
 
 | Check | Result | Notes |
 |-------|--------|-------|
-| Overhangs | PASS | mesh + letters print flat on the bed; legs are vertical posts |
-| Bridges | PASS | none — open mesh, deck-down orientation |
+| Overhangs | PASS | mesh + letters print flat on the bed; legs are vertical towers anchored to the bed |
+| Bridges | PASS | none — full-height legs anchor the deck to the bed (no elevated layer) |
 | Thin walls | PASS | 1.8 mm mesh ribs and 3 mm frame ≥ 1.2 mm min wall |
 | Watertight (per tile) | PASS | each base + letter body manifold |
 | Jigsaw interference | PASS | **0.0000 cm³** on all 6 pairwise quadrant checks |
@@ -74,9 +77,11 @@ bridging, no supports); the legs print as short vertical posts.
 ## Two-color printing
 
 Each quadrant ships as a **`-bicolor.3mf`** containing two objects — the tan **base**
-(mesh + frame + legs) and the letter-color **glyph** — print-oriented (deck on the bed).
-Open it in Bambu Studio and assign one filament to each object. For a single-filament
-print, use the `tileperf-<id>.stl` reference mesh instead.
+(mesh + frame + legs + the lower 3 mm of the letter) and the letter-color **cap** — already
+print-oriented (letter face on the bed). Open it in Bambu Studio and assign one filament to
+each object. The colored cap is **only the top 1 mm (~5 layers)** of the letter, printed
+first against the bed, so it's a **single filament change** with no wasted second-color
+volume. For a single-filament print, use the `tileperf-<id>.stl` reference mesh instead.
 
 ## Validation
 
@@ -86,14 +91,14 @@ per-tile fit:    126.8 × 177.6 mm  (256 bed)        PASS
 jigsaw:          6/6 pairwise interference 0.0000cc PASS
 watertight:      4/4 tiles (base + letter bodies)   PASS
 field open:      ~46 % (target 40–50 %)             PASS
-total material:  222.7 cm³ ≈ 276 g PLA              PASS
+total material:  228.4 cm³ ≈ 283 g PLA              PASS
 ```
 
 ## Print Settings
 
 | Setting | Value |
 |---------|-------|
-| Orientation | Deck flat on bed, legs up |
+| Orientation | Letter face flat on bed, legs as towers (as bundled in the 3MF) |
 | Material | PLA (PETG/ASA if it sags in summer mailbox heat) |
 | Layer height | 0.2 mm |
 | Supports | None |
