@@ -1,9 +1,10 @@
 """Bundle each tile's base + hollow-outline letter into a print-oriented 3MF.
 
 Reads output/print2c/<id>-base.stl + <id>-letter.stl (in-use orientation: deck
-z=0..4 on top, legs z=0..-15). Flips 180 deg about X so the deck sits on the bed
-and the legs point up (no bridges), then writes a two-object 3MF that Bambu Studio
-opens with the base and letter as separate objects (assign one filament to each).
+z=0..4 on top, legs z=-15..4 through the deck). Flips 180 deg about X so the letter
+show face sits on the bed and the full-height legs anchor on the bed and rise as
+towers (no bridges), then writes a two-object 3MF that Bambu Studio opens with the
+base and letter cap as separate objects (assign one filament to each).
 """
 import os
 import numpy as np

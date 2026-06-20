@@ -20,7 +20,8 @@ Treatment (matches the approved M):
   - hollow-outline letter: ring = glyph - erode(glyph, 3.5 mm); flush in the deck void
   - two-color split: base = deck(- glyph void) + legs ; letter = ring (both full 4 mm deck)
 
-Outputs (in-use orientation: deck z=0..4 on top, legs z=0..-15):
+Outputs (in-use orientation: deck z=0..4 on top, legs z=-15..4 — full height through the
+deck, flush with the show face; letter color is only the z=3..4 cap):
   output/tileperf-<id>.stl                 single-color welded tile
   output/print2c/<id>-base.stl             tan base (deck + legs, glyph void)
   output/print2c/<id>-letter.stl           letter-color hollow-outline ring
@@ -44,6 +45,7 @@ LETTER_MARGIN = 1.5         # field hatch stops this far short of the letter
 DRAIN_D = 3.2               # small drain-hole diameter inside the (mostly solid) letter
 DRAIN_PITCH = 9.0           # drain-hole grid pitch inside the letter
 DRAIN_EDGE = 3.0            # keep drain holes this far inside the letter edge
+COLOR_T = 1.0               # letter-color cap depth (top ~5 layers); rest of letter is base color
 
 # Tile center in assembly coords -> sign tells which edges are interior seams.
 TILES = {
@@ -183,15 +185,21 @@ def build_tile(letter):
     ribs = lattice(inner)                           # continuous cross-hatch mesh
     field_open = inner.difference(ribs).difference(glyph.buffer(LETTER_MARGIN))  # open diamonds
     drain = letter_drain(glyph)                     # small holes in the solid letter
+    glyph_solid = glyph.difference(drain)           # the mostly-solid letter body (with drains)
 
-    legs = extrude(unary_union(leg_polys(letter, t["cx"], t["cy"])), LEG, z0=-LEG)
+    # Feet run the FULL height — from the floor (z=-LEG) up THROUGH the deck, flush with
+    # the deck top (z=DECK). Printed deck-top-down, the foot ends land on the bed coplanar
+    # with the deck face, so the whole tile is anchored flat (no elevated deck = no bridge).
+    legs = extrude(unary_union(leg_polys(letter, t["cx"], t["cy"])), LEG + DECK, z0=-LEG)
 
-    # base (tan): full plate, open the field hatch, void the whole letter footprint
-    base = union([carve(fp, field_open, glyph)] + legs)
-    # letter (2nd filament): solid glyph with small drain holes only
-    letter_mesh = carve(glyph, drain)
-    # single-color reference: field hatch + letter drain holes from one plate
-    single = union([carve(fp, field_open, drain)] + legs)
+    # Full one-piece deck: cross-hatch field + mostly-solid drain-holed letter (z 0..DECK).
+    deck_single = carve(fp, field_open, drain)
+    # Letter color lives only in the top COLOR_T mm (the show face) -> one filament change.
+    color_cap = union(extrude(glyph_solid, COLOR_T, z0=DECK - COLOR_T))
+
+    base = union([difference(deck_single, [color_cap])] + legs)   # base filament
+    letter_mesh = color_cap                                       # 2nd filament (top cap only)
+    single = union([deck_single] + legs)                          # one-color reference
 
     p2c = os.path.join(OUT, "print2c")
     base.export(os.path.join(p2c, f"{letter}-base.stl"))
