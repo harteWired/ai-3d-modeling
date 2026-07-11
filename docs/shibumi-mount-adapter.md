@@ -18,7 +18,17 @@ the neoprene) are **dropped** — Phase 1 models just the functional socket on a
 
 ![Socket cross-sections](images/shibumi-mount-adapter/socket-diagram.png)
 
-![Isometric render](images/shibumi-mount-adapter/socket-iso.png)
+### Proofs — rendered from the actual STL
+
+Looking into the open mouth (cavity, inward capture lips along the top edges, the inverted-U
+floor rails, closed arch bridge at the back):
+
+![Three-quarter view into the open mouth](images/shibumi-mount-adapter/proof-mouth-3q.png)
+
+Short-axis section — outer walls, the inward capture lips stepping in at the top, the cavity, and
+the two floor rails:
+
+![Short-axis cross-section](images/shibumi-mount-adapter/proof-short-section.png)
 
 ## How the dimensions were derived
 
