@@ -61,6 +61,45 @@ Matt sent 10 more shots: `reference/photos/2026-07-11-shibumi-adapter-16..25.jpg
 - **Caliper in-frame:** 17 (reads ~40.1 mm — confirm which feature).
 - **Caveats (still open):** (1) no shot of the mount actually seated **on the chair cleat** — the open-end sections strongly imply lengthwise entry but a true mated-on-cleat photo would still confirm engagement; (2) blade **thickness** still not calipered; (3) these are visual — derive Z by scaling against the 28.2 / 46.61 known dims, or ask Matt for calipered Z on standoff + socket depth if fit-critical.
 
+### ✅ RESOLVED architecture (2026-07-11, main Claude, from photos 16–25)
+
+Slide-in **undercut socket**. Cleat enters the OPEN mouth end and slides LENGTHWISE; the
+inward-curling wall lips grab its back edges; a low central rail structure registers its front.
+
+- **Side walls** rise ~10 mm and their tops **curl inward into a lip/ledge** (undercut) —
+  clear in photos 18, 19. Overhang wraps the cleat's back.
+- **Far end = closed arch bridge**; **mouth end = open** (photos 22, 24, 25). Lengthwise entry.
+- **Center = two LOW rails** on the floor (photos 20, 22), far below the wall tops.
+- **Functional raised loop outer length ≈ 40.1 mm** (photo 17 caliper), width 28.2. The 46.61
+  (photo 08) is the OUTERMOST decorative terrace — DROPPED. Inner cavity ≈ 33 L × 21.2 W, so a
+  27.6 mm cleat slides in lengthwise with ~5 mm clearance. Geometry closes.
+
+**Central feature = inverted-U tongue** (two thin rails joined by a rounded bridge at the closed
+end, with a wide central slot). Rail dims are MEASURED by Matt (2026-07-11):
+
+| Feature | Value | Source |
+|---|---:|---|
+| Rail (leg) width, each | **2.15 mm** | Matt caliper |
+| Central slot (between rails) | **8.2 mm** | Matt caliper |
+| Rail offset from each side wall | **4.5 mm** | Matt caliper |
+| Short-axis check: 4.5+2.15+8.2+2.15+4.5 | 21.5 ≈ 21.2 cavity ✓ | |
+
+> Correction: batch-1 photo 11 = **4.63 ≈ the wall→rail gap (4.5)**, NOT a rail width. Earlier
+> passes mis-mapped it as slot/rail. Rails are thin (2.15), not 4.63.
+
+Z / remaining estimates (scaled off 28.2 / 40.1 — correct on first test print):
+
+| Feature | Estimate |
+|---|---:|
+| Loop standoff height (backing top → wall top) | ~10 mm |
+| Backing plate thickness | ~2.5 mm |
+| Wall base thickness | ~3.5 mm |
+| Inward lip overhang (per side) | ~2 mm |
+| Socket depth (floor → lip underside) | ~7 mm |
+| Central rail height | ~3 mm |
+| Inner cavity length | ~33 mm |
+| Inner cavity width | ~21.2 mm |
+
 ### 📸 Cleat-detail photos 2026-07-11 (26, 27, 29–33) — resolves "what does the socket grab?"
 `reference/photos/2026-07-11-shibumi-adapter-{26,27,29..33}.jpg` (28 was an accidental selfie, omitted). These show the **chair-side cleat**: a **flat grey molded tab** at the leg-pivot junction (where two round tubes cross a moulded knuckle), next to the **~20 mm round tube** and a **round pivot boss/knuckle**. The socket slides onto this flat tab.
 - Cleat tab calipered ~**26.9–27.6 mm** wide (30–33), consistent with the earlier **27.86** "wide pivot tab" reading → this is the engaged surface.

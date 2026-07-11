@@ -1,0 +1,91 @@
+{
+  "designName": "shibumi-mount-adapter",
+  "validationPass": true,
+  "iterations": 1,
+  "dimensions": {
+    "actual": { "x": 28.2, "y": 40.1, "z": 12.51 },
+    "expected": { "x": 28.2, "y": 40.1, "z": 12.5 },
+    "withinTolerance": true
+  },
+  "features": [
+    {
+      "name": "backing_plate",
+      "description": "Minimal rounded-corner backing plate below the socket floor (decorative sewing terraces + flange of the original are DROPPED). Provides the mounting face and the socket floor.",
+      "param": { "backing_x": 28.2, "backing_y": 40.1, "backing_thickness": 2.5, "backing_corner_r": 3.0 },
+      "z_range": [-2.5, 0.0],
+      "outer_extent": 40.1,
+      "inner_extent": null,
+      "scad_line": 209,
+      "transitions": { "below": "bed", "above": "socket_body / floor_rails" }
+    },
+    {
+      "name": "floor_rails",
+      "description": "Inverted-U tongue on the socket floor: two thin rails (2.15 wide, in X) running lengthwise in Y, joined by a rounded bridge at the far (+Y closed) end, with a wide central slot between them. Rails stop short of the mouth. They set the cleat blade's seating height (rail 3 + blade 4.02 ~= socket depth 7).",
+      "param": { "rail_width": 2.15, "rail_height": 3.0, "rail_offset": 4.5, "central_slot": 8.2, "rail_corner_r": 0.6 },
+      "z_range": [0.0, 3.0],
+      "outer_extent": 12.5,
+      "inner_extent": 8.2,
+      "scad_line": 184,
+      "transitions": { "below": "backing_plate (floor)", "above": "open cavity" }
+    },
+    {
+      "name": "socket_body_walls",
+      "description": "Outer socket footprint (28.2 x 40.1) with ~3.5 mm side walls rising from the floor (z=0) to the standoff top (z=10). Inner cavity 21.2 (X) x 33 (Y) open toward +Z. The mouth (-Y) end is FULLY OPEN for lengthwise cleat entry; the far (+Y) end is closed by the arch bridge end wall.",
+      "param": { "socket_outer_x": 28.2, "socket_outer_y": 40.1, "wall_base_thick": 3.5, "standoff_height": 10.0, "cavity_x": 21.2, "cavity_y": 33.0, "arch_wall_thick": 3.5 },
+      "z_range": [0.0, 10.0],
+      "outer_extent": 40.1,
+      "inner_extent": 21.2,
+      "scad_line": 135,
+      "transitions": { "below": "backing_plate (floor)", "above": "capture_lips" }
+    },
+    {
+      "name": "capture_lips",
+      "description": "Inward-curling capture lips occupying the TOP 3 mm of the two LONG side walls AND the far (+Y) arch end wall. Each overhangs inward ~2 mm, narrowing the opening above z=7 so the cavity is ~7 mm deep under the lip. Traps the cleat blade's back face. NO lip at the mouth (-Y open end).",
+      "param": { "lip_overhang": 2.0, "lip_zone_height": 3.0, "lip_bottom_z": 7.0, "lip_top_z": 10.0 },
+      "z_range": [7.0, 10.0],
+      "outer_extent": 40.1,
+      "inner_extent": 17.2,
+      "scad_line": 155,
+      "transitions": { "below": "socket_body_walls", "above": "top" }
+    }
+  ],
+  "printOrientation": {
+    "bed_face": "backing-plate bottom face (z=-2.5) on the bed; socket opens straight up (+Z)",
+    "z_direction": "print-Z == design +Z (socket opening axis)",
+    "note": "Recommended orientation is mouth-UP / on-back (socket opening toward the nozzle, backing plate on the bed). This is the natural manifold orientation and matches the design's +Z. See printability flags."
+  },
+  "printabilityFlags": [
+    {
+      "feature": "capture_lips",
+      "type": "undercut/overhang",
+      "detail": "The inward lips (top 3 mm of long walls + arch end) overhang inward ~2 mm/side. Printed mouth-up they are a downward-facing ~2 mm ledge at z=7 -> a horizontal overhang / short internal bridge of ~2 mm per side over the cavity. Below the 45-degree unsupported rule but the span is short (2 mm, well under MAX_BRIDGE_SPAN 10). Likely printable with minor bridging/overhang quality loss; may want light support or a chamfered lip underside in a later round. Faithful-nominal v1 keeps the square undercut per the reference — flagged for print-reviewer, NOT redesigned.",
+      "z": 7.0
+    },
+    {
+      "feature": "arch_bridge_end_wall",
+      "type": "overhang (top lip on closed end)",
+      "detail": "The far (+Y) end wall carries the same inward lip; its underside is a small downward overhang at z=7. Same short-span note as the side lips.",
+      "z": 7.0
+    }
+  ],
+  "specDeviations": [
+    {
+      "dimension": "loop_outer_length (Y)",
+      "expected": 40.1,
+      "actual": 40.1,
+      "reason": "Used the RESOLVED functional-loop length 40.1 (photo 17 caliper), NOT the 46.61 outermost decorative terrace, per requirements.md + reference measurements.md."
+    },
+    {
+      "dimension": "rail_offset_from_wall (effective)",
+      "expected": 4.5,
+      "actual": 4.35,
+      "reason": "Rails centered symmetrically about X=0 from the measured central_slot (8.2) + rail_width (2.15). Effective wall->rail gap resolves to 4.35 vs the measured 4.5; the two independent short-axis sums (4.5+2.15+8.2+2.15+4.5=21.5) already overshoot the 21.2 cavity by 0.3, so ~0.15 mm is distributed. Within nominal-repro tolerance; no taper this round."
+    },
+    {
+      "dimension": "total_z",
+      "expected": 12.5,
+      "actual": 12.51,
+      "reason": "backing_thickness 2.5 + standoff_height 10.0 = 12.5; the 0.01 is a rounding artifact of the tiny geometry epsilons. Negligible."
+    }
+  ]
+}
