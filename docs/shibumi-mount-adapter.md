@@ -61,12 +61,14 @@ copies bracket the vertical clearance (varied via rail height):
 
 | Piece | Capture gap | Clearance vs blade | Purpose |
 |---|---:|---:|---|
-| **A — nominal** | 4.0 mm | −0.02 (interference) | Validates outer/inner X-Y geometry; baseline |
-| **B — snug** | 4.2 mm | +0.18 | Tight slide, positive grip |
-| **C — sliding** | 4.35 mm | +0.33 | Easy slide (FDM sliding-fit target) |
+| **A — nominal** (backing **1**) | 4.0 mm | −0.02 (interference) | Validates outer/inner X-Y geometry; baseline |
+| **B — snug** (backing **2**) | 4.2 mm | +0.18 | Tight slide, positive grip |
+| **C — sliding** (backing **3**) | 4.35 mm | +0.33 | Easy slide (FDM sliding-fit target) |
 
-Print all three, try each on the real cleat, and keep the one that slides on with a confident,
-non-rattly grip. That result sets the clearance for the taper tuning in the next round.
+Each piece has its number (**1 / 2 / 3**) debossed 0.8 mm into the flat backing face so you can
+tell them apart after printing. Print all three, try each on the real cleat, and keep the one that
+slides on with a confident, non-rattly grip. That result sets the clearance for the taper tuning
+in the next round.
 
 ## Printing
 

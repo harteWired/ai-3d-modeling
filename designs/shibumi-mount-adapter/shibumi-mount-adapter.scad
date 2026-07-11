@@ -55,6 +55,11 @@ lip_zone_height   = 3.0;    // lips occupy the TOP 3 mm of the walls
 // --- Arch bridge (far +Y end) ---
 arch_wall_thick   = 3.5;    // end-wall thickness at base (same as side walls)
 
+// --- Variant label (shallow deboss on the flat backing outer face) ---
+label        = "";     // e.g. "1"/"2"/"3" for fit-test variants; "" = none
+label_size   = 13;     // mm cap height
+label_depth  = 0.8;    // deboss depth into the backing
+
 // --- Inverted-U floor tongue (two rails + rounded bridge at far end) ---
 rail_width        = 2.15;   // each rail, in X
 rail_height       = 3.0;    // above floor
@@ -221,12 +226,26 @@ module backing_plate() {
 // ASSEMBLY — single manifold solid
 // ============================================================================
 
+// Shallow debossed numeral on the flat backing OUTER face (-Z), mirrored so it
+// reads correctly when the backing is viewed face-on.
+module label_cut() {
+    if (label != "")
+        translate([0, 0, -backing_thickness - 0.01])
+            linear_extrude(height = label_depth + 0.01)
+                mirror([1, 0, 0])
+                    text(label, size = label_size, halign = "center", valign = "center",
+                         font = "Liberation Sans:style=Bold", $fn = 32);
+}
+
 module shibumi_mount() {
-    union() {
-        backing_plate();
-        socket_body();
-        capture_lips();
-        floor_rails();
+    difference() {
+        union() {
+            backing_plate();
+            socket_body();
+            capture_lips();
+            floor_rails();
+        }
+        label_cut();
     }
 }
 
