@@ -48,7 +48,7 @@ cavity_y          = 33.0;   // long axis, inner (floor length)
 cavity_corner_r   = 2.0;    // rounded inner corners
 
 // --- Capture lips (top of the two LONG walls + the far arch end) ---
-lip_overhang      = 2.0;    // inward overhang, per side
+lip_overhang      = 2.1;    // inward overhang, per side (photo 10 = 2.12, measured)
 lip_zone_height   = 3.0;    // lips occupy the TOP 3 mm of the walls
 // => socket depth under the lip = standoff_height - lip_zone_height = 7.0
 
@@ -158,25 +158,28 @@ module capture_lips() {
     // two long sides and the far end. On the mouth side it is flush with the
     // cavity (no lip) so the opening stays clear.
 
-    lip_inner_x = cavity_x - 2*lip_overhang;   // narrowed opening width
-    // Long-axis: the lip band must land on the FAR (+Y arch) end, and there must be
-    // NO band across the -Y MOUTH (the cleat slides in there). Shorten the hole by
-    // lip_overhang and shift it toward -Y so its -Y edge reaches the cavity mouth
-    // edge => no crossbar over the mouth; the leftover band sits at +Y.
-    lip_inner_y = cavity_y - lip_overhang;     // shortened by one lip at the far end
-    lip_center_y = -lip_overhang/2;            // shift hole toward -Y (mouth) => band only at +Y
+    // The lip is a continuous inside border (a picture frame missing its mouth rail):
+    // it runs down BOTH long walls straight to the mouth edge and wraps the far arch
+    // end, and is OPEN at the -Y mouth. Built as (cavity outline) minus (an inset
+    // outline whose mouth side is opened out past the cavity), so the two long-wall
+    // lips terminate flush and straight at the mouth — no pinched/pointy remnant.
+    inner_w = cavity_x - 2*lip_overhang;   // narrowed opening between the long-wall lips
+    inner_l = cavity_y - 2*lip_overhang;   // inset that leaves the rounded far-end lip
 
     translate([0, 0, lip_bottom_z])
         linear_extrude(height=lip_zone_height + 0.01)
             difference() {
-                // outer bound = the wall inner face (cavity outline)
+                // outer bound = the wall inner face (cavity outline, rounded)
                 rrect(cavity_x, cavity_y, cavity_corner_r);
-                // inner bound = narrowed opening (the lip hole)
-                translate([0, lip_center_y])
-                    rrect(lip_inner_x, lip_inner_y, cavity_corner_r);
+                union() {
+                    // inset void — rounded corners give the far-end lip clean fillets
+                    rrect(inner_w, inner_l, cavity_corner_r);
+                    // open the mouth (-Y): a straight channel from the mouth edge inward,
+                    // so the long-wall lips run contiguous & straight to the mouth (no band)
+                    translate([-inner_w/2, -cavity_y/2 - 1])
+                        square([inner_w, cavity_y/2 + 1]);
+                }
             }
-    // The inner hole is shifted -Y so its mouth edge reaches the cavity edge =>
-    // lips run the two long walls + the far arch end, and the MOUTH stays fully open.
 }
 
 // ============================================================================

@@ -14,6 +14,39 @@ Source: Matt's caliper photos (2026-07-10), 15 images in `photos/`.
 Analysis method: 4 independent blind reads — Claude (main), Gemini 3.1-pro, and two blind
 Claude agents — reconciled below. Spread between passes = uncertainty estimate.
 
+## DEFINITIVE PARAMETER SET (2026-07-11, post exhaustive Gemini scan of all 32 photos + Matt ground-truth)
+
+Reconciled from: Matt's direct caliper values (authoritative), a Gemini 3.1-pro scan of every
+image, and Claude re-reads of the contested shots. This is the source of truth for the model.
+
+**FUNCTIONAL socket (modeled):**
+| Param | Value | Source / confidence |
+|---|---:|---|
+| Loop outer width (short) | 28.2 | photo 09, measured |
+| Loop outer length (long) | 40.1 | photo 17 (re-read; Gemini's 40.71/"cavity" was a misread) |
+| Inner cavity width | 21.2 | photo 06; Matt short-axis check = 21.5 |
+| Inner cavity length | ~33 | est = 40.1 − 2×3.5 walls |
+| Wall thickness | ~3.5 | derived |
+| **Capture lip inward overhang / side** | **2.1** | **photo 10 = 2.12 — MEASURED (was est 2.0)** |
+| Lip vertical zone height | ~3 | est |
+| Standoff (wall top) | ~10 | est |
+| Socket depth (floor→lip underside) | ~7 | est; cross-checks rail 3 + blade 4.02 = 7.02 |
+| Rail width (each) | 2.15 | Matt, measured |
+| Rail height | ~3 | est |
+| Rail offset from wall | 4.5 | Matt, measured |
+| Central slot | 8.2 | Matt, measured |
+| Backing thickness | ~2.5 | est |
+
+**CLEAT (reference, NOT modeled):** tab width 27.8 (photos 15/33; 32=26.9) · tab thickness **4.02** (Matt; Gemini's 2.69 = decimal misread of 26.9) · round tube OD 20.01 (photo 14).
+
+**DROPPED decorative:** outer sewing terrace plate ≈ 46.6 × 46.9 (photos 08/11) — stitch flange, not modeled.
+
+**Conflicts resolved this pass:** (1) 11.95 = across the whole tongue (rail+slot+rail ≈ 12.5), NOT the slot — slot is 8.2. (2) photo 17 = loop outer length 40.1, not cavity length. (3) photo 10 = 2.12 lip overhang (upgrades estimate → measured). (4) cleat thickness = 4.02, not Gemini's 2.69.
+
+**Still estimated (calipers would firm up):** lip zone height, standoff, socket depth, rail height, cavity length, backing thickness. The rail 3 + blade 4.02 ≈ depth 7 identity anchors the Z stack.
+
+---
+
 ## What the part is — CORRECTED architecture (2026-07-10, per Matt + zoom re-review)
 
 > ⚠️ SUPERSEDES the earlier "raised tongue" reading, which was WRONG (lighting fooled the
