@@ -1,0 +1,61 @@
+{
+  "name": "shibumi-mount-adapter",
+  "version": "v1",
+  "description": "Phase 1 of the Shibumi-adapters program: a dimensionally-accurate, tolerance-tunable reproduction of the grey molded attachment mechanism. CORRECTED architecture: a CAPTURE SOCKET that a flat cleat blade slides down into lengthwise; the side walls curl/overhang inward at the top to wrap the back of the cleat (undercut capture), and two LOW rails on the socket floor register the cleat's front face. (NOT a raised tongue — earlier read was wrong.) Decorative stepped ridges + sewing flange of the original are dropped; only the functional socket on a minimal backing is modeled. Later phases add holders (bottle/table/phone) that reuse this mount.",
+  "requiresId": false,
+  "requiresStrainAnalysis": false,
+  "modelingBackend": "openscad",
+  "material": "PLA",
+  "material_note": "PLA for fit-test prints. Final beach part likely PETG or ASA (UV + hot-trunk resistance). Geometry kept material-agnostic.",
+  "maxDimensions": { "x": 256, "y": 256, "z": 256 },
+  "defaultTolerance": 0.2,
+  "measured": {
+    "confidence": "high",
+    "note": "Plan/X-Y dims from caliper photos; short-axis cross-section closes to within 0.03 mm on two independent sums.",
+    "loop_outer_length": 46.61,
+    "loop_outer_width": 28.2,
+    "inner_opening_width": 21.22,
+    "tongue_width": 11.95,
+    "slot_width": 4.63,
+    "wall_thickness_derived": 3.5
+  },
+  "central_feature": {
+    "note": "Inverted-U tongue: two thin rails joined by a rounded bridge at the closed end, wide central slot. Rail dims MEASURED by Matt 2026-07-11.",
+    "rail_width": 2.15,
+    "central_slot": 8.2,
+    "rail_offset_from_wall": 4.5,
+    "shortaxis_check": "4.5+2.15+8.2+2.15+4.5 = 21.5 ~= 21.2 cavity"
+  },
+  "z_estimates": {
+    "note": "Scaled off 28.2 / 40.1 known dims from photos 16-25; correct on first test print.",
+    "loop_standoff_height": 10.0,
+    "backing_thickness": 2.5,
+    "wall_base_thickness": 3.5,
+    "inward_lip_overhang_per_side": 2.0,
+    "socket_depth": 7.0,
+    "rail_height": 3.0,
+    "inner_cavity_length": 33.0,
+    "inner_cavity_width": 21.2,
+    "loop_outer_length": 40.1,
+    "cleat_blade_thickness": 4.02,
+    "mating_direction": "cleat (27.6 wide x 4.02 thick) enters end-on/lengthwise through the open mouth"
+  },
+  "cleat_reference": {
+    "note": "Reference only — NOT modeled. Defines what the socket must accept + the tolerance gap.",
+    "round_tube_od": 20.01,
+    "flat_tab_width": 27.6,
+    "flat_tab_width_alt": "26.9 (photo 32) / 27.6 (photo 33) / 27.86 (batch-1 photo 15)",
+    "flat_tab_thickness": 4.02,
+    "engagement": "flat tab slides end-on/lengthwise into the socket mouth; rides on rails, captured under lips",
+    "capture_check": "rail height 3 + blade 4.02 = 7.02 ~= socket depth 7 (blade back face meets lip underside)"
+  },
+  "tolerances": {
+    "note": "The original's soft material grips with a small gap. Rigid PLA repro reproduces nominal geometry first; an internal taper to recover grip is a later fit-tuning round."
+  },
+  "watertight": true,
+  "watertight_note": "Single manifold solid: minimal backing + raised loop + tongue.",
+  "open_items": [
+    "Validate 5 estimated dims (height, slot depth, inner length, tongue length, backing) on first print",
+    "Tune internal taper for grip after the nominal repro is confirmed on the real cleat"
+  ]
+}
