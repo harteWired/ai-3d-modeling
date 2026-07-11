@@ -159,10 +159,12 @@ module capture_lips() {
     // cavity (no lip) so the opening stays clear.
 
     lip_inner_x = cavity_x - 2*lip_overhang;   // narrowed opening width
-    // Long-axis: far end gets a lip; mouth end does not. Shift the lip rect in +Y
-    // by lip_overhang/2 and shorten by lip_overhang so only the far end insets.
-    lip_inner_y = cavity_y - lip_overhang;     // shortened only at far end
-    lip_center_y = lip_overhang/2;             // pushes inset to +Y (far) side only
+    // Long-axis: the lip band must land on the FAR (+Y arch) end, and there must be
+    // NO band across the -Y MOUTH (the cleat slides in there). Shorten the hole by
+    // lip_overhang and shift it toward -Y so its -Y edge reaches the cavity mouth
+    // edge => no crossbar over the mouth; the leftover band sits at +Y.
+    lip_inner_y = cavity_y - lip_overhang;     // shortened by one lip at the far end
+    lip_center_y = -lip_overhang/2;            // shift hole toward -Y (mouth) => band only at +Y
 
     translate([0, 0, lip_bottom_z])
         linear_extrude(height=lip_zone_height + 0.01)
@@ -173,8 +175,8 @@ module capture_lips() {
                 translate([0, lip_center_y])
                     rrect(lip_inner_x, lip_inner_y, cavity_corner_r);
             }
-    // Because the inner hole is shifted +Y and shortened, the -Y (mouth) edge of
-    // the hole reaches the cavity edge => no lip protrudes at the mouth. Good.
+    // The inner hole is shifted -Y so its mouth edge reaches the cavity edge =>
+    // lips run the two long walls + the far arch end, and the MOUTH stays fully open.
 }
 
 // ============================================================================
