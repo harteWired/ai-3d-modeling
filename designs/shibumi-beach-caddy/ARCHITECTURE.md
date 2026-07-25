@@ -1,9 +1,11 @@
 # Shibumi Beach Caddy — Architecture (Phase 2)
 
-> Status: **v0 architecture / massing.** Packaging + structural reasoning locked here;
-> real geometry waits on two opens (Yeti Ø, chair load path). Written 2026-07-25 from
-> WM#584/585. Supersedes the swappable-single-item idea in the old mount-adapter
-> `PHASE2-ARCHITECTURE.md`.
+> Status: **v1 DRAFT BODY built + validated** (2026-07-25, WM#592). Yeti Ø96 = diameter
+> CONFIRMED; unibody + depth-stack GREEN. The caddy body is now real parametric geometry
+> (`shibumi-beach-caddy.scad`) — watertight, 140 × 178 × 110 mm, fits the X1C
+> (`node bin/validate.js` PASS). The MOUNT is a parametric TBD placeholder pending the two
+> load-path opens below. Renders: `output/caddy-draft-front.png`, `caddy-draft-back.png`.
+> (Supersedes the swappable-single-item idea in the old mount-adapter `PHASE2-ARCHITECTURE.md`.)
 
 ## 1. The reframe
 One caddy holds **phone + Kindle + Yeti together**, prefer **unibody**. Parameterized

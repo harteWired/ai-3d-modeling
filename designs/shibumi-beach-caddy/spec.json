@@ -1,6 +1,6 @@
 {
   "name": "shibumi-beach-caddy",
-  "version": "v0-architecture",
+  "version": "v1-draft-body",
   "description": "Phase 2 of the Shibumi-adapters program: ONE combined caddy that mounts to the Shibumi beach chair (via the Phase-1 capture socket) and holds a phone, a Kindle, and a Yeti bottle together, ergonomically. Prefer UNIBODY (single print, capture socket integrated). Parameterized PER PERSON so a second owner's caddy (Hana) is a dimension swap, not a redesign. v0 = architecture/massing stage: packaging + structural reasoning locked, geometry pending open decisions (Yeti diameter, chair load path, final layout).",
   "requiresId": false,
   "requiresId_note": "Utility part; 'ergonomic' handled as functional layout, not aesthetic motif. Revisit if Matt wants styling.",
@@ -33,8 +33,9 @@
       },
       "bottle": {
         "diameter": 96,
-        "diameter_assumed": true,
-        "note": "Yeti. Matt said '96 RADIUS'; a 96mm radius (192mm bottle) is implausible for a standard Yeti -> treated as ~96mm DIAMETER. CONFIRMATION PENDING (flagged to Matt via Wintermute)."
+        "diameter_assumed": false,
+        "size_class": "~36oz Yeti (assumed for mass; confirm oz)",
+        "note": "CONFIRMED by Matt (WM#592, 2026-07-25): the 96mm is the DIAMETER (~36oz-class Yeti). Bottle oz still assumed ~36 for mass estimate."
       }
     },
     "hana": {
@@ -67,11 +68,11 @@
   },
 
   "open_items": [
-    "CONFIRM Yeti bottle diameter (96mm dia assumed; Matt said 'radius') AND bottle size/oz for mass.",
-    "Chair geometry around the cleat: photos + whether the caddy can rest against the chair frame (load path). Determines if a single cleat mount is structurally sufficient.",
-    "Final item layout (Option 3 'depth stack, bottle nearest mount' recommended) + bottle accessibility check.",
-    "Unibody vs split-for-transport (Matt prefers unibody; split OK only if robust + low-profile + clearly better breakdown).",
-    "Hana's device dimensions (variant placeholder)."
+    "MOUNT/LOAD-PATH ONLY (does NOT block the body): chair geometry around the cleat (photos) + whether the caddy can rest against the chair frame. Determines if a single cleat mount is structurally sufficient.",
+    "MOUNT ONLY: Phase-1 A/B/C fit-test result -> sets the integrated capture socket's rail_height. Socket is modeled as a parametric TBD placeholder until then.",
+    "Bottle oz refinement (assumed ~36oz for mass; confirm).",
+    "Hana's device dimensions (variant placeholder).",
+    "RESOLVED 2026-07-25: Yeti Ø96 = diameter (WM#592); unibody + depth-stack layout confirmed (WM#585/592)."
   ],
 
   "watertight": true
