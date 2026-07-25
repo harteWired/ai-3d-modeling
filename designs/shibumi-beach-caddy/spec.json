@@ -1,0 +1,78 @@
+{
+  "name": "shibumi-beach-caddy",
+  "version": "v0-architecture",
+  "description": "Phase 2 of the Shibumi-adapters program: ONE combined caddy that mounts to the Shibumi beach chair (via the Phase-1 capture socket) and holds a phone, a Kindle, and a Yeti bottle together, ergonomically. Prefer UNIBODY (single print, capture socket integrated). Parameterized PER PERSON so a second owner's caddy (Hana) is a dimension swap, not a redesign. v0 = architecture/massing stage: packaging + structural reasoning locked, geometry pending open decisions (Yeti diameter, chair load path, final layout).",
+  "requiresId": false,
+  "requiresId_note": "Utility part; 'ergonomic' handled as functional layout, not aesthetic motif. Revisit if Matt wants styling.",
+  "requiresStrainAnalysis": true,
+  "modelingBackend": "openscad",
+  "material": "PLA",
+  "material_note": "PLA for fit/massing prototypes. Final beach part PETG or ASA (UV + hot-trunk + load). Geometry kept material-agnostic.",
+  "maxDimensions": { "x": 256, "y": 256, "z": 256 },
+  "defaultTolerance": 0.2,
+
+  "program": {
+    "phase": 2,
+    "parent_mount": "designs/shibumi-mount-adapter (Phase 1 capture socket)",
+    "mount_interface": "socket backing face, 28.2 x 40.1 mm, r3.0, in the -Z plane; gap-independent so caddy design is NOT blocked by the pending A/B/C fit-test",
+    "recommended_coupling": "UNIBODY — integrate the capture socket into the caddy; no separable joint. See ARCHITECTURE.md for why (removes the weakest link under a full-bottle moment)."
+  },
+
+  "persons": {
+    "matt": {
+      "status": "reference spec (WM#584, 2026-07-25)",
+      "phone": {
+        "w": 77, "h": 156, "t": 15,
+        "h_is_floor": true,
+        "note": "iPhone IN CASE. Caliper maxed on H -> ~156 is a FLOOR, likely slightly more. t=15 includes camera bump."
+      },
+      "kindle": {
+        "w": 130, "h": 176, "t": 14,
+        "h_is_floor": true,
+        "note": "Caliper maxed on H -> ~176 is a FLOOR."
+      },
+      "bottle": {
+        "diameter": 96,
+        "diameter_assumed": true,
+        "note": "Yeti. Matt said '96 RADIUS'; a 96mm radius (192mm bottle) is implausible for a standard Yeti -> treated as ~96mm DIAMETER. CONFIRMATION PENDING (flagged to Matt via Wintermute)."
+      }
+    },
+    "hana": {
+      "status": "PLACEHOLDER — dims TBD",
+      "phone": null,
+      "kindle": null,
+      "bottle": null,
+      "note": "Hana gets her OWN caddy with her devices' dims. Design stays parameterized so this is a re-slice, not a re-model."
+    }
+  },
+
+  "design_margins": {
+    "note": "Applied to a person's raw dims to get modeled interior envelopes.",
+    "width_clearance_total": 4,
+    "thickness_clearance_total": 3,
+    "tall_dim_hold_fraction": "cradle holds a lower portion; item protrudes for grab. Add extra height margin since tall dims are caliper-maxed floors.",
+    "bottle_diameter_clearance": 6
+  },
+
+  "loadCase": {
+    "note": "PRELIMINARY — refine once geometry + chair load path are known. Governs requiresStrainAnalysis=true.",
+    "critical_item": "full Yeti bottle",
+    "bottle_mass_kg_est": 1.5,
+    "bottle_mass_note": "bottle ~0.45kg + up to ~1L water; use 1.2-1.5kg. Confirm bottle size (26/36/46oz) with Matt.",
+    "phone_mass_kg_est": 0.25,
+    "kindle_mass_kg_est": 0.2,
+    "caddy_mass_kg_est": 0.5,
+    "lever_arm_concern": "all mass cantilevers off a ~28x40mm cleat socket. Overturning moment ~1.5-2 N*m estimated. MITIGATION: caddy likely must BEAR on the chair frame; heavy bottle kept nearest the mount + low. Chair geometry REQUIRED to finalize.",
+    "material": "PETG or ASA final"
+  },
+
+  "open_items": [
+    "CONFIRM Yeti bottle diameter (96mm dia assumed; Matt said 'radius') AND bottle size/oz for mass.",
+    "Chair geometry around the cleat: photos + whether the caddy can rest against the chair frame (load path). Determines if a single cleat mount is structurally sufficient.",
+    "Final item layout (Option 3 'depth stack, bottle nearest mount' recommended) + bottle accessibility check.",
+    "Unibody vs split-for-transport (Matt prefers unibody; split OK only if robust + low-profile + clearly better breakdown).",
+    "Hana's device dimensions (variant placeholder)."
+  ],
+
+  "watertight": true
+}
