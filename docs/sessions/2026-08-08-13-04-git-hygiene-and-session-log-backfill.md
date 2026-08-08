@@ -96,6 +96,21 @@ matching the fleet governance-symlink pattern. Committing that to a GitHub repo
 would hand clones a broken absolute-path symlink instead of the charter. Flagged
 to Matt rather than decided unilaterally.
 
+**cu confirmed and sharpened this (2026-08-08) — it is worse than described, and
+fleet-wide:**
+
+- The symlink target is **absolute**, so a clone on any other machine gets a
+  dangling link.
+- Git would not render it as a benign typechange. The diff shows
+  `deleted file mode 100644` against a 70-line file, so the commit **reads as
+  deleting the charter** — worse than a broken link, because it looks intentional
+  in history.
+- **All 22 agent `CLAUDE.md` files are symlinked this way.** Every agent with a
+  GitHub-backed repo has the same latent commit waiting for whoever runs
+  `git add -A` first.
+
+Still Matt's call, and cu's view is the same for the other 21.
+
 ## Gaps found, reported to cu
 
 - **No commit signing key and no git identity** in this repo. All history is
@@ -104,10 +119,40 @@ to Matt rather than decided unilaterally.
   Only key present is `remote-ops_ed25519`, not provisioned for commit signing —
   did not repurpose it. The global convention says sign; that is broken here and
   likely fleet-wide.
-- **`launch.sh` is local-only and untracked** across all 20 agent dirs
-  (byte-identical, so low risk, but backed up nowhere).
+
+  **Confirmed fleet-wide by cu** (0 GPG secret keys, no SSH pubkeys for uid
+  `fleet`, all signing config unset), already with persona for Matt, raised in
+  parallel by atelier and forge. The sharper version, worth knowing before anyone
+  tries to fix it: **per-agent signing keys are not achievable on this host while
+  every agent runs as uid 999** — any agent can read another's key off disk, so
+  per-agent keys would be theatre. This is not a provisioning oversight to be
+  fixed by generating keys; it blocks on agents no longer sharing a uid.
+
+- ~~**`launch.sh` is local-only and untracked** across all 20 agent dirs
+  (byte-identical, so low risk, but backed up nowhere).~~
+  **WRONG — corrected by cu, see below. There is no backup gap.**
 - **`env` confirmed never committed** on any branch (`git log --all -- env` empty),
   and now gitignored.
+
+### Correction: launch.sh is tracked (cu, 2026-08-08)
+
+The canonical copy is **`fleet-runtime-repo/fleet-runtime/launch.sh`**, tracked
+and pushed. cu compared all 22 agent copies against it: **20 are byte-identical**,
+so those are deployed copies of a file that already lives in a pushed repo. Only
+**camera-crawler and network-manager** diverge, and both differ **only in header
+comments** — no functional change.
+
+My error was inferring "untracked here and identical everywhere" meant "tracked
+nowhere." Byte-identical copies across 20 dirs was evidence *for* a canonical
+source, not against one — I checked whether the file was tracked *in the agent
+dirs* and never looked for it in `fleet-runtime/`.
+
+**One real salvage, not mine to move:** network-manager's divergent header
+comment records an operational fact the canonical file does not — that its
+launch.sh is the Claude SDK side only, and the poller is a separate systemd unit.
+If anyone regenerates the agent copies from canonical, that disappears. Worth
+upstreaming into the canonical file or into network-manager's charter rather than
+leaving it as an accidental comment.
 
 ## Other fixes
 
