@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "fusion": {
+      "type": "stdio",
+      "command": "/opt/fleet/agents/3d-printing/scripts/fusion-mcp-wrapper.sh"
+    }
+  }
+}

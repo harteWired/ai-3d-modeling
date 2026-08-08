@@ -1,0 +1,86 @@
+{
+  "name": "fan-tub-adapter-v2",
+  "description": "Two-part tool-free fan mount: base plate (caulked to lid) + snap-on retention clip, with 119mm fan reference.",
+  "parts": [
+    {
+      "name": "base",
+      "designDir": "designs/fan-tub-adapter-base",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "description": "Base plate — caulked to tub lid, clip ledges on locating rim",
+      "stlPath": "designs/fan-tub-adapter-base/output/fan-tub-adapter-base.stl"
+    },
+    {
+      "name": "fan",
+      "scadRef": "scad-lib/reference/fan-frame-119.scad",
+      "position": [
+        0,
+        0,
+        5
+      ],
+      "reference": true,
+      "description": "119mm fan frame (reference, not printed). Sits on inner plate at z=5.0",
+      "stlPath": "assemblies/reference-stls/fan-frame-119.stl"
+    },
+    {
+      "name": "clip",
+      "designDir": "designs/fan-tub-adapter-clip",
+      "position": [
+        0,
+        0,
+        6.15
+      ],
+      "description": "Retention clip — local z=0 (hook bottom) maps to global z=6.15",
+      "stlPath": "designs/fan-tub-adapter-clip/output/fan-tub-adapter-clip.stl"
+    }
+  ],
+  "checks": {
+    "interference": [
+      {
+        "partA": "base",
+        "partB": "clip",
+        "maxVolume": 5,
+        "description": "Base-clip overlap is expected at hook engagement zone; limit total interference volume"
+      },
+      {
+        "partA": "base",
+        "partB": "fan",
+        "maxVolume": 0,
+        "description": "Fan must sit inside locating rim with clearance — zero intersection allowed"
+      },
+      {
+        "partA": "clip",
+        "partB": "fan",
+        "maxVolume": 0,
+        "description": "Clip frame sits on fan top — no mesh overlap when properly positioned"
+      }
+    ]
+  },
+  "fitSpecs": [
+    {
+      "name": "clip-hook-ledge-engagement",
+      "partA": "clip",
+      "partB": "base",
+      "type": "interference",
+      "expected": {
+        "min": 0.3,
+        "max": 1.5
+      },
+      "description": "Hook-to-ledge interference volume confirms positive engagement"
+    },
+    {
+      "name": "fan-in-rim-clearance",
+      "partA": "fan",
+      "partB": "base",
+      "type": "clearance",
+      "expected": {
+        "min": 0.3,
+        "max": 0.7
+      },
+      "description": "Gap between fan frame and locating rim inner wall (should be loc_clearance=0.5mm)"
+    }
+  ]
+}
