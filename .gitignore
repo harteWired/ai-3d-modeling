@@ -1,12 +1,36 @@
 node_modules/
 designs/*/iterations/
 designs/*/output/*.png
+designs/*/output/**/*.png
+designs/*/test-prints/*/output/
 test/fixtures/*.stl
 !test/fixtures/.gitkeep
 test/fixtures/tmp/
 .venv/
 assemblies/*/output/
 *.cli-project.json
+
+# CLI render lock files — regenerated on every render. The bare `*.cli-project.json`
+# rule above missed the `.lock` suffix, which was 38 untracked paths on its own.
+*.json.lock
+
+__pycache__/
+
+# Secrets / per-instance runtime state — never commit. `env` holds
+# CLAUDE_CODE_OAUTH_TOKEN and friends fleet-wide.
+/env
+.env
+*.env
+/.instance-id
+/model.txt
+/launch.sh
+*.pre-git-bak
+
+# Regenerable image derivatives. Draft/superseded renders — the selected finals
+# live in docs/images/<design>/ and are tracked. Reference crops are derived from
+# the committed source photos in reference/photos/ via the tracked crop scripts.
+docs/images/drafts/
+designs/*/reference/crops*/
 
 # Local-only PR drafts for upstream contributions
 pr-draft/
