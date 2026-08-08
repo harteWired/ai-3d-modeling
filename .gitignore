@@ -35,3 +35,9 @@ designs/*/reference/crops*/
 # Local-only PR drafts for upstream contributions
 pr-draft/
 designs/battery-capsule-holder/reference/
+
+# Operational charter is maintained privately and is not tracked here (WM#1864).
+CLAUDE.md
+
+# Local-only fleet hooks
+.git-hooks/
