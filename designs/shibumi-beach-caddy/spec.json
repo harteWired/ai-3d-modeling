@@ -1,6 +1,6 @@
 {
   "name": "shibumi-beach-caddy",
-  "version": "v1-draft-body",
+  "version": "v3-rugged-cantilever",
   "description": "Phase 2 of the Shibumi-adapters program: ONE combined caddy that mounts to the Shibumi beach chair (via the Phase-1 capture socket) and holds a phone, a Kindle, and a Yeti bottle together, ergonomically. Prefer UNIBODY (single print, capture socket integrated). Parameterized PER PERSON so a second owner's caddy (Hana) is a dimension swap, not a redesign. v0 = architecture/massing stage: packaging + structural reasoning locked, geometry pending open decisions (Yeti diameter, chair load path, final layout).",
   "requiresId": false,
   "requiresId_note": "Utility part; 'ergonomic' handled as functional layout, not aesthetic motif. Revisit if Matt wants styling.",
@@ -8,26 +8,32 @@
   "modelingBackend": "openscad",
   "material": "PLA",
   "material_note": "PLA for fit/massing prototypes. Final beach part PETG or ASA (UV + hot-trunk + load). Geometry kept material-agnostic.",
-  "maxDimensions": { "x": 256, "y": 256, "z": 256 },
+  "maxDimensions": {
+    "x": 256,
+    "y": 256,
+    "z": 256
+  },
   "defaultTolerance": 0.2,
-
   "program": {
     "phase": 2,
     "parent_mount": "designs/shibumi-mount-adapter (Phase 1 capture socket)",
     "mount_interface": "socket backing face, 28.2 x 40.1 mm, r3.0, in the -Z plane; gap-independent so caddy design is NOT blocked by the pending A/B/C fit-test",
-    "recommended_coupling": "UNIBODY — integrate the capture socket into the caddy; no separable joint. See ARCHITECTURE.md for why (removes the weakest link under a full-bottle moment)."
+    "recommended_coupling": "UNIBODY \u2014 integrate the capture socket into the caddy; no separable joint. See ARCHITECTURE.md for why (removes the weakest link under a full-bottle moment)."
   },
-
   "persons": {
     "matt": {
       "status": "reference spec (WM#584, 2026-07-25)",
       "phone": {
-        "w": 77, "h": 156, "t": 15,
+        "w": 77,
+        "h": 156,
+        "t": 15,
         "h_is_floor": true,
         "note": "iPhone IN CASE. Caliper maxed on H -> ~156 is a FLOOR, likely slightly more. t=15 includes camera bump."
       },
       "kindle": {
-        "w": 130, "h": 176, "t": 14,
+        "w": 130,
+        "h": 176,
+        "t": 14,
         "h_is_floor": true,
         "note": "Caliper maxed on H -> ~176 is a FLOOR."
       },
@@ -39,14 +45,13 @@
       }
     },
     "hana": {
-      "status": "PLACEHOLDER — dims TBD",
+      "status": "PLACEHOLDER \u2014 dims TBD",
       "phone": null,
       "kindle": null,
       "bottle": null,
       "note": "Hana gets her OWN caddy with her devices' dims. Design stays parameterized so this is a re-slice, not a re-model."
     }
   },
-
   "design_margins": {
     "note": "Applied to a person's raw dims to get modeled interior envelopes.",
     "width_clearance_total": 4,
@@ -54,26 +59,116 @@
     "tall_dim_hold_fraction": "cradle holds a lower portion; item protrudes for grab. Add extra height margin since tall dims are caliper-maxed floors.",
     "bottle_diameter_clearance": 6
   },
-
   "loadCase": {
-    "note": "PRELIMINARY — refine once geometry + chair load path are known. Governs requiresStrainAnalysis=true.",
+    "note": "PRELIMINARY \u2014 refine once geometry + chair load path are known. Governs requiresStrainAnalysis=true.",
     "critical_item": "full Yeti bottle",
     "bottle_mass_kg_est": 1.5,
     "bottle_mass_note": "bottle ~0.45kg + up to ~1L water; use 1.2-1.5kg. Confirm bottle size (26/36/46oz) with Matt.",
     "phone_mass_kg_est": 0.25,
     "kindle_mass_kg_est": 0.2,
     "caddy_mass_kg_est": 0.5,
-    "lever_arm_concern": "all mass cantilevers off a ~28x40mm cleat socket. Overturning moment ~1.5-2 N*m estimated. MITIGATION: caddy likely must BEAR on the chair frame; heavy bottle kept nearest the mount + low. Chair geometry REQUIRED to finalize.",
-    "material": "PETG or ASA final"
+    "lever_arm_concern": "all mass cantilevers off a ~28x40mm cleat socket. Overturning moment ~1.5-2 N*m estimated.",
+    "design_directive": "STANDALONE CANTILEVER (WM#1104, Matt, 2026-07-28): the caddy must NOT rely on backing against the chair leg \u2014 the cleat protrudes awkwardly (forces the caddy back + leaning) and the leg fit is a hard-to-capture 3D skew. The cleat-mount + gussets carry the FULL cantilever load rigidly. An OPTIONAL leg brace can be added later IF Matt supplies the leg-skew dims; it is a bonus, not load-bearing.",
+    "v3_mitigations": "(1) heavy bottle nearest the mount + low = shortest lever arm; (2) external SIDE BUTTRESS GUSSETS run the full depth along the load path, deepest at the root; (3) BACK-CORNER HAUNCHES fillet the base<->spine junction where the moment peaks; (4) thicker base plate (5.5) + spine (8.0) = deeper root section; (5) unibody, no coupling to peel; (6) PRINT BASE-DOWN so the peak tensile fiber runs in-plane with the layers, junction loaded in shear/compression not interlayer peel.",
+    "next": "strain-analyzer pass on this geometry to quantify root stress + safety factor and confirm the section is adequate standalone; escalate to FEA if the margin is tight (gusseted junction is not a clean prism).",
+    "material": "PETG",
+    "material_note": "PETG primary (final part PETG or ASA per material_note top-level; ASA not in scad-lib/materials.json yet so PETG used as the closest analyzed proxy \u2014 similar ductility/interlayer behavior). See strain-analyzer discussion for a PLA one-liner (fit prototypes print PLA).",
+    "minSafetyFactor": 2.0,
+    "forces": [
+      {
+        "magnitude_N": 14.715,
+        "direction": [
+          0,
+          0,
+          -1
+        ],
+        "applicationPoint_mm": [
+          0,
+          63.5,
+          49.5
+        ],
+        "comment": "Full Yeti bottle (~1.5kg incl. water) resting in the cradle; y=bo_cy (cradle centerline), z arbitrary mid-cradle-height (gravity moment about the X bending axis depends only on the Y offset for this geometry, not Z)."
+      },
+      {
+        "magnitude_N": 1.962,
+        "direction": [
+          0,
+          0,
+          -1
+        ],
+        "applicationPoint_mm": [
+          0,
+          132.5,
+          55.5
+        ],
+        "comment": "Kindle in its channel (0.2kg), y = mid-channel centroid (y_k0..y_k1 midpoint)."
+      },
+      {
+        "magnitude_N": 2.4525,
+        "direction": [
+          0,
+          0,
+          -1
+        ],
+        "applicationPoint_mm": [
+          0,
+          158,
+          51.5
+        ],
+        "comment": "iPhone in case, in its channel (0.25kg), y = mid-channel centroid (y_p0..y_p1 midpoint)."
+      },
+      {
+        "magnitude_N": 4.905,
+        "direction": [
+          0,
+          0,
+          -1
+        ],
+        "applicationPoint_mm": [
+          0,
+          50,
+          40
+        ],
+        "comment": "Caddy self-weight (0.5kg est., base+spine+gussets+haunches+cradle wall). Y-centroid ~50mm from the root, volume-weighted across spine (heavy, at the very back), gussets (triangular, centroid at 1/3 of their 170mm run), base plate (uniform across full depth), and bottle-cradle wall \u2014 cross-checked against the spec narrative estimate of ~1.5-2 N*m total overturning moment (this force set sums to ~1.83 N*m at the root, consistent)."
+      }
+    ],
+    "criticalSections": [
+      {
+        "name": "root-spine-mount-junction",
+        "location_mm": [
+          0,
+          0,
+          0
+        ],
+        "shape": "solid_rect",
+        "width_mm": 140,
+        "height_mm": 110,
+        "cantilever_length_mm": 170,
+        "layerOrientation": "in-plane",
+        "comment": "Full-width solid spine block (caddy_w x spine_h) at y=0, the base<->spine/mount junction named in the design brief as the peak-moment section. Printed base-down per the v3 directive, so the peak tensile/compressive fiber (top/bottom of this section) runs fore-aft (Y) = in-plane with the horizontal layers, not interlayer peel. This model captures ONLY the solid spine block; it deliberately ignores the two side buttress gussets and the back-corner haunches (extra, unquantified reinforcement) that also cross this junction, so it is a conservative FLOOR on the true section strength, not the true composite. Not a clean prism once gussets/haunches are counted -> FEA recommended for an exact composite number, though the margin here should be enormous given the base_t/spine_t upsizing."
+      },
+      {
+        "name": "gusset-taper-post-spine",
+        "location_mm": [
+          0,
+          9,
+          0
+        ],
+        "shape": "solid_rect",
+        "width_mm": 9,
+        "height_mm": 70.5,
+        "cantilever_length_mm": 161,
+        "layerOrientation": "in-plane",
+        "comment": "Idealizes the TWO side buttress gussets alone (each 4.5mm thick x taper height, combined as one 9mm-wide equivalent rect since gusset X-position does not affect bending resistance about the X axis) at y=9mm, just aft of the spine, where the spine's full 140x110 block ends and the tapering gusset+base-plate composite becomes the sole flexural member for the rest of the cantilever (y=9..170). Height 70.5mm = linear taper value at y=9 (gusset_h=74mm at y=0 -> 0 at y=170, per side_gusset() polygon). Deliberately ignores the 5.5mm base plate and haunch fillets underneath (extra, unquantified reinforcement) -> conservative FLOOR. Gussets print as vertical ribs, base-down, so bending stress (fore-aft) runs in-plane with horizontal layers, not interlayer peel. Not a clean prism (two separate outboard ribs, not a solid block) -> FEA recommended for an exact composite number. Hand-swept check across y=9..160 (not run through this single-point CLI section) shows stress stays under ~0.22 MPa throughout this region -- well below either candidate section here -- so no additional mid-span section is expected to govern."
+      }
+    ]
   },
-
   "open_items": [
     "MOUNT/LOAD-PATH ONLY (does NOT block the body): chair geometry around the cleat (photos) + whether the caddy can rest against the chair frame. Determines if a single cleat mount is structurally sufficient.",
     "MOUNT ONLY: Phase-1 A/B/C fit-test result -> sets the integrated capture socket's rail_height. Socket is modeled as a parametric TBD placeholder until then.",
     "Bottle oz refinement (assumed ~36oz for mass; confirm).",
     "Hana's device dimensions (variant placeholder).",
-    "RESOLVED 2026-07-25: Yeti Ø96 = diameter (WM#592); unibody + depth-stack layout confirmed (WM#585/592)."
+    "RESOLVED 2026-07-25: Yeti \u00d896 = diameter (WM#592); unibody + depth-stack layout confirmed (WM#585/592)."
   ],
-
   "watertight": true
 }

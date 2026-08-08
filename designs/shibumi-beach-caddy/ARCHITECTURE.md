@@ -52,22 +52,41 @@ the slots to grab it. If that reads awkward on the real chair, alternative is bo
 front corner (worse lever arm) — a structure-vs-reach tradeoff to settle against the
 actual chair. This is why chair geometry matters.
 
-## 5. Structural reality (the big one)
+## 5. Structural reality (the big one) — STANDALONE CANTILEVER (v3, WM#1104)
 Full Yeti (~1.2–1.5 kg) + Kindle (~0.2) + phone (~0.25) + caddy (~0.5) ≈ **2.5 kg**
 hanging off a ~28 × 40 mm cleat socket. Estimated overturning moment **~1.5–2 N·m**.
 
-That is a lot for a small plastic slide-on clip. Mitigations, in priority:
-1. **Bear on the chair frame.** The caddy should rest/brace against the chair leg or arm
-   so vertical load + moment flow into the chair, and the cleat mainly *locates* it.
-   **Requires chair geometry.**
-2. **Bottle nearest + low** (see §4) to minimize its lever arm.
-3. **Unibody** (§2) — no coupling to peel apart.
-4. Possible second contact / brace against the leg if #1 isn't enough.
+**Directive change (Matt, 2026-07-28):** do **NOT** rely on backing against the chair leg.
+The cleat protrudes awkwardly — backing the caddy against the leg forces it way back and
+leaves it leaning, and the leg fit is a 3D skew that's hard to capture or describe. So the
+**cleat-mount + gussets must carry the full cantilever standalone.** A leg brace, if it
+ever happens, is an *optional* bonus once Matt supplies the leg-skew dims — never the
+primary load path.
 
-Honest flag: a single beach-chair cleat may not be rated to hold a full bottle purely in
-cantilever. We need to see the chair to decide whether one mount + a frame rest is enough,
-or whether a second mount / strap is warranted. `strain-analyzer` runs once geometry +
-load path are real.
+v3 geometry to earn that (all in `shibumi-beach-caddy.scad`, all base-down printable):
+1. **External side buttress gussets** — long right-triangles down each side, tall at the
+   root (mount junction) tapering to the base at the front, running **along the load
+   path**. They deepen the cantilever section exactly where the bending is highest.
+2. **Back-corner haunches** — solid fillets tying the base plate into the spine in the
+   dead corners outboard of the bottle ring; spreads the peak-moment junction into
+   distributed compression/shear instead of a sharp stress riser.
+3. **Deeper root section** — base plate 4.0 → **5.5 mm**, spine 6.0 → **8.0 mm**.
+4. **Bottle nearest + low** (§4) so the heaviest item has the shortest lever arm.
+5. **Unibody** (§2) — no coupling to peel apart.
+6. **Print orientation = base-down (as-used).** The peak tensile fiber (top of the
+   section at the root) then runs fore-aft = **in-plane** with the horizontal layers, and
+   the base↔spine weld is loaded in shear/compression, **not interlayer peel**. (Directly
+   addresses Matt's layer-plane concern.) Underside gussets aren't used because the
+   receptacle floors force base-down printing — literal underside webs would be below the
+   bed; the stiffening is placed above/around the platform + at the back instead.
+
+**Honest flag:** a single beach-chair cleat may still not be rated to hold a full bottle
+purely in cantilever regardless of how stiff the *caddy* is — the limit could be the cleat
+itself or the socket's grip on it. `strain-analyzer` runs next on this geometry to quantify
+root stress + safety factor; escalate to FEA if the margin is tight (the gusseted junction
+isn't a clean prism). If the cleat can't take it, options are a lighter fill guidance
+(don't fill the Yeti on the caddy) or a second capture point — but the mechanical design
+target stays: standalone.
 
 ## 6. Build order (once unblocked)
 1. Confirm **Yeti Ø** + bottle oz (mass).
@@ -80,7 +99,13 @@ load path are real.
 7. Hana variant = swap her dims, re-slice.
 
 ## Blockers / flags
-1. **Yeti diameter** — 96 mm dia assumed (Matt said "radius"); + bottle oz for mass. ⛳
-2. **Chair geometry / load path** — photos around the cleat; can it rest on the frame? ⛳
-3. **Phase-1 A/B/C fit result** — sets the integrated socket's `rail_height` (shared blocker). ⛳
-4. Confirm **unibody + depth-stack layout** before cutting real geometry.
+1. ✅ **Yeti diameter** — RESOLVED: Ø96 confirmed (WM#592).
+2. ~~Chair geometry / frame rest~~ — **NO LONGER a blocker** (WM#1104): standalone-cantilever
+   directive removes the frame-rest dependency. Chair-leg dims are now only needed for the
+   *optional* future brace, not the primary design.
+3. **Phase-1 A/B/C fit result** — still sets the integrated socket's `rail_height` (shared
+   blocker); mount stays a parametric placeholder until then. ⛳
+4. **`strain-analyzer` pass** on the v3 gusseted geometry — confirm the standalone root
+   section is adequate for the bottle load case; FEA if the margin is tight. ⛳
+5. Device **hold heights** (protrusion per item) — Matt's ergonomic call; current values placeholder.
+6. Bottle **oz** for mass estimate (assumed ~36oz).

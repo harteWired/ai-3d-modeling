@@ -1,0 +1,225 @@
+{
+  "skipped": false,
+  "design_name": "shibumi-beach-caddy",
+  "design_version": "v3-rugged-cantilever",
+  "description": "",
+  "material": {
+    "displayName": "PETG",
+    "yield_MPa": 45,
+    "tensile_MPa": 50,
+    "youngs_modulus_MPa": 2000,
+    "density_g_cc": 1.27,
+    "interlayer_derate": 0.7,
+    "notes": "More ductile than PLA; better interlayer adhesion. Lower stiffness \u2014 deflection-limited designs may need thicker sections.",
+    "_id": "PETG"
+  },
+  "min_safety_factor": 2.0,
+  "forces": [
+    {
+      "magnitude_N": 14.715,
+      "direction": [
+        0,
+        0,
+        -1
+      ],
+      "applicationPoint_mm": [
+        0,
+        63.5,
+        49.5
+      ],
+      "comment": "Full Yeti bottle (~1.5kg incl. water) resting in the cradle; y=bo_cy (cradle centerline), z arbitrary mid-cradle-height (gravity moment about the X bending axis depends only on the Y offset for this geometry, not Z)."
+    },
+    {
+      "magnitude_N": 1.962,
+      "direction": [
+        0,
+        0,
+        -1
+      ],
+      "applicationPoint_mm": [
+        0,
+        132.5,
+        55.5
+      ],
+      "comment": "Kindle in its channel (0.2kg), y = mid-channel centroid (y_k0..y_k1 midpoint)."
+    },
+    {
+      "magnitude_N": 2.4525,
+      "direction": [
+        0,
+        0,
+        -1
+      ],
+      "applicationPoint_mm": [
+        0,
+        158,
+        51.5
+      ],
+      "comment": "iPhone in case, in its channel (0.25kg), y = mid-channel centroid (y_p0..y_p1 midpoint)."
+    },
+    {
+      "magnitude_N": 4.905,
+      "direction": [
+        0,
+        0,
+        -1
+      ],
+      "applicationPoint_mm": [
+        0,
+        50,
+        40
+      ],
+      "comment": "Caddy self-weight (0.5kg est., base+spine+gussets+haunches+cradle wall). Y-centroid ~50mm from the root, volume-weighted across spine (heavy, at the very back), gussets (triangular, centroid at 1/3 of their 170mm run), base plate (uniform across full depth), and bottle-cradle wall \u2014 cross-checked against the spec narrative estimate of ~1.5-2 N*m total overturning moment (this force set sums to ~1.83 N*m at the root, consistent)."
+    }
+  ],
+  "sections": [
+    {
+      "name": "root-spine-mount-junction",
+      "location_mm": [
+        0,
+        0,
+        0
+      ],
+      "shape_label": "solid rectangle 140.0 \u00d7 110.0 mm",
+      "I_mm4": 15528333.333333334,
+      "c_mm": 55.0,
+      "area_mm2": 15400,
+      "moment_Nmm": 1827.1125000000002,
+      "moment_vector_Nmm": [
+        -1827.1125000000002,
+        0.0,
+        0.0
+      ],
+      "moment_breakdown": [
+        {
+          "force_N": 14.715,
+          "lever_arm_mm": 80.51397394241573,
+          "moment_components_Nmm": [
+            -934.4025,
+            0.0,
+            0.0
+          ],
+          "moment_magnitude_Nmm": 934.4025
+        },
+        {
+          "force_N": 1.962,
+          "lever_arm_mm": 143.65409844484077,
+          "moment_components_Nmm": [
+            -259.965,
+            0.0,
+            0.0
+          ],
+          "moment_magnitude_Nmm": 259.965
+        },
+        {
+          "force_N": 2.4525,
+          "lever_arm_mm": 166.1813768146118,
+          "moment_components_Nmm": [
+            -387.495,
+            0.0,
+            0.0
+          ],
+          "moment_magnitude_Nmm": 387.495
+        },
+        {
+          "force_N": 4.905,
+          "lever_arm_mm": 64.03124237432849,
+          "moment_components_Nmm": [
+            -245.25,
+            0.0,
+            0.0
+          ],
+          "moment_magnitude_Nmm": 245.25
+        }
+      ],
+      "sigma_MPa": 0.006471472845336482,
+      "sigma_allow_MPa": 45,
+      "allowable_basis": "in-plane yield (no derate)",
+      "layer_orientation": "in-plane",
+      "safety_factor": 6953.594811485335,
+      "min_safety_factor": 2.0,
+      "pass": true,
+      "cantilever_length_mm": 170,
+      "deflection_mm": 0.001267376821938392,
+      "fea_recommended": false,
+      "fea_reasons": [],
+      "comment": "Full-width solid spine block (caddy_w x spine_h) at y=0, the base<->spine/mount junction named in the design brief as the peak-moment section. Printed base-down per the v3 directive, so the peak tensile/compressive fiber (top/bottom of this section) runs fore-aft (Y) = in-plane with the horizontal layers, not interlayer peel. This model captures ONLY the solid spine block; it deliberately ignores the two side buttress gussets and the back-corner haunches (extra, unquantified reinforcement) that also cross this junction, so it is a conservative FLOOR on the true section strength, not the true composite. Not a clean prism once gussets/haunches are counted -> FEA recommended for an exact composite number, though the margin here should be enormous given the base_t/spine_t upsizing."
+    },
+    {
+      "name": "gusset-taper-post-spine",
+      "location_mm": [
+        0,
+        9,
+        0
+      ],
+      "shape_label": "solid rectangle 9.0 \u00d7 70.5 mm",
+      "I_mm4": 262801.96875,
+      "c_mm": 35.25,
+      "area_mm2": 634.5,
+      "moment_Nmm": 1610.8020000000001,
+      "moment_vector_Nmm": [
+        -1610.8020000000001,
+        0.0,
+        0.0
+      ],
+      "moment_breakdown": [
+        {
+          "force_N": 14.715,
+          "lever_arm_mm": 73.62404498531713,
+          "moment_components_Nmm": [
+            -801.9675,
+            0.0,
+            0.0
+          ],
+          "moment_magnitude_Nmm": 801.9675
+        },
+        {
+          "force_N": 1.962,
+          "lever_arm_mm": 135.39756275502157,
+          "moment_components_Nmm": [
+            -242.307,
+            0.0,
+            0.0
+          ],
+          "moment_magnitude_Nmm": 242.307
+        },
+        {
+          "force_N": 2.4525,
+          "lever_arm_mm": 157.64913574136713,
+          "moment_components_Nmm": [
+            -365.4225,
+            0.0,
+            0.0
+          ],
+          "moment_magnitude_Nmm": 365.4225
+        },
+        {
+          "force_N": 4.905,
+          "lever_arm_mm": 57.28001396647874,
+          "moment_components_Nmm": [
+            -201.10500000000002,
+            0.0,
+            0.0
+          ],
+          "moment_magnitude_Nmm": 201.10500000000002
+        }
+      ],
+      "sigma_MPa": 0.2160591519541271,
+      "sigma_allow_MPa": 45,
+      "allowable_basis": "in-plane yield (no derate)",
+      "layer_orientation": "in-plane",
+      "safety_factor": 208.27629652806488,
+      "min_safety_factor": 2.0,
+      "pass": true,
+      "cantilever_length_mm": 161,
+      "deflection_mm": 0.06361109258527958,
+      "fea_recommended": false,
+      "fea_reasons": [],
+      "comment": "Idealizes the TWO side buttress gussets alone (each 4.5mm thick x taper height, combined as one 9mm-wide equivalent rect since gusset X-position does not affect bending resistance about the X axis) at y=9mm, just aft of the spine, where the spine's full 140x110 block ends and the tapering gusset+base-plate composite becomes the sole flexural member for the rest of the cantilever (y=9..170). Height 70.5mm = linear taper value at y=9 (gusset_h=74mm at y=0 -> 0 at y=170, per side_gusset() polygon). Deliberately ignores the 5.5mm base plate and haunch fillets underneath (extra, unquantified reinforcement) -> conservative FLOOR. Gussets print as vertical ribs, base-down, so bending stress (fore-aft) runs in-plane with horizontal layers, not interlayer peel. Not a clean prism (two separate outboard ribs, not a solid block) -> FEA recommended for an exact composite number. Hand-swept check across y=9..160 (not run through this single-point CLI section) shows stress stays under ~0.22 MPa throughout this region -- well below either candidate section here -- so no additional mid-span section is expected to govern."
+    }
+  ],
+  "overall_pass": true,
+  "worst_section": "gusset-taper-post-spine",
+  "worst_safety_factor": 208.27629652806488,
+  "fea_recommended": false
+}
