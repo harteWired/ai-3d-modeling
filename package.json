@@ -2,9 +2,9 @@
   "name": "3d-printing",
   "version": "1.0.0",
   "type": "module",
-  "description": "AI-native 3D printing pipeline: OpenSCAD → STL → validate loop",
+  "description": "AI-native 3D printing pipeline: OpenSCAD \u2192 STL \u2192 validate loop",
   "scripts": {
-    "test": "node --test test/",
+    "test": "node --test",
     "validate": "node bin/validate.js",
     "check-assembly": "node bin/check-assembly.js"
   },
