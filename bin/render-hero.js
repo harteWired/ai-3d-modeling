@@ -33,6 +33,11 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = resolve(__dirname, "..");
 const RENDER_SCRIPT = join(PROJECT_ROOT, "scripts", "render-hero.py");
 const DEFAULT_PRESET = join(PROJECT_ROOT, "scad-lib", "blender-presets", "studio.py");
+// Jinn-era preference, kept deliberately: this is NOT the bug lib/openscad.js had. The existsSync
+// check means a missing path falls through to PATH rather than failing, so it degrades correctly.
+// ⛔ Blender is not installed on this host at all (measured 2026-09-06) — neither branch resolves,
+// and this exits with a loud ENOENT naming `blender`. That is the right behaviour; do not "fix" it
+// by pointing at a path that does not exist either.
 const STATIC_BLENDER = "/home/node/blender/blender";
 
 function pickBlender() {

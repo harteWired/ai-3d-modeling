@@ -21,6 +21,13 @@ Color/SSS safety: SSS pinned at 0.015. Direct lights near-neutral
 (no warm-amber tints) so warm hues stay beige instead of peach.
 """
 
+# ⛔ DOES NOT RUN ON THIS HOST (measured 2026-09-06). Blender is NOT installed on this host —
+# not on PATH, no binary found. The /home/node/blender paths below are Jinn-container remnants.
+# Deliberately NOT repointed: aiming them at a Blender that does not exist converts a loud
+# ENOENT into a confusing one, and nothing here could be proved without the binary.
+# To revive: install Blender, invoke as `blender --background --python <this script>`.
+
+
 import argparse
 import os
 import sys

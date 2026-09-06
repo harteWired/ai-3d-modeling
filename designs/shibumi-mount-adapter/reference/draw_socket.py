@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Dimensioned reference drawing of the Shibumi mount capture-socket (as-understood).
 Three panels: short-axis section, long-axis section, top-down plan. Units = mm."""
+import os
+
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -132,6 +134,12 @@ dim(axC, -2.2, 0, -2.2, OL, "40.1", off=0)
 dim(axC, 0, OL+2.2, OW, OL+2.2, "28.2", off=0.8)
 axC.set_xlim(-8, OW+22); axC.set_ylim(-9, OL+6)
 
-out = "/workspace/projects/3d-printing/designs/shibumi-mount-adapter/reference/socket-diagram.png"
+# Was hardcoded to /workspace/projects/... — a Jinn-container path absent on this host, so this
+# script could not write anywhere. Self-locating, with an env override used to prove the script
+# without clobbering the existing (untracked, single-copy) socket-diagram.png. 2026-09-06.
+# NB: `Path` here is matplotlib.path.Path (imported above), NOT pathlib — use os.path.
+out = os.environ.get("SOCKET_DIAGRAM_OUT") or os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "socket-diagram.png"
+)
 fig.savefig(out, dpi=130, bbox_inches="tight", facecolor="white")
 print("wrote", out)
