@@ -41,3 +41,6 @@ CLAUDE.md
 
 # Local-only fleet hooks
 .git-hooks/
+
+# Local git-hook install record (machine-local, not part of the project)
+.hook-install-prestate.txt
