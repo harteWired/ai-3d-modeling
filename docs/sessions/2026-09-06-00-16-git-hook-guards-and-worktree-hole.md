@@ -102,5 +102,6 @@ centrally.
 
 ## Next Action
 
-Return to `v3-rugged-cantilever`: the geometry did not pass review and no
-diagnosis has been done on why. Nothing in this session bears on it.
+~~Return to `v3-rugged-cantilever`.~~ **SUPERSEDED 2026-09-07 — beach-caddy is
+TABLED at Matt's decision (WM#2719); do not resume.** See the later session log
+of 2026-09-06 for the full note.

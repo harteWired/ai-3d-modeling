@@ -94,5 +94,13 @@ shipping an unprovable edit is how the next false note gets written.
 
 ## Next Action
 
-`v3-rugged-cantilever` — it fails review and has never been diagnosed. The
-validator it needs now actually runs, which it did not before today.
+~~`v3-rugged-cantilever` — it fails review and has never been diagnosed.~~
+
+**SUPERSEDED 2026-09-07 — the beach-caddy project is TABLED at Matt's decision
+(WM#2719). Do not resume it.** No further work on the socket or body. The
+`shibumi-beach-caddy-architecture` branch is left as-is, unmerged and not deleted,
+in case it is ever wanted; nothing on it is in flight.
+
+**There is no active design task.** The pipeline work above stands on its own and
+is unaffected — rendering, mesh analysis, validation and the test suite all work,
+and that is general capability, not caddy-specific.
